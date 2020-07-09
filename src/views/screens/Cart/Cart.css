@@ -1,0 +1,57 @@
+/* :root {
+  --accent-default: #3c64b1;
+  --accent-dark: #1e4693;
+  --accent-light: #5a82cf;
+  --gray-lightest: #f4f5f4;
+  --gray-divider: #e2e5e6;
+  --gray-default: #c3cbcd;
+  --gray-dark: #737b7d;
+  --black: #373f41;
+} */
+
+.cart-table td {
+  width: 1%;
+  white-space: nowrap;
+  vertical-align: middle;
+  border-top: 1px solid #dbdde0;
+  border-bottom: 1px solid #dbdde0;
+  padding: 16px 0px;
+}
+
+.cart-table thead tr {
+  border: 0px !important;
+  text-transform: uppercase;
+}
+
+.cart-table thead tr th {
+  padding: 12px 0px;
+  color: gray;
+}
+
+.cart-table {
+  text-align: center;
+}
+
+.close-icon:hover {
+  cursor: pointer;
+}
+
+.cart-card {
+  width: 100%;
+  border: 1px solid var(--gray-divider);
+  background-color: var(--gray-lightest);
+  border-radius: 4px;
+}
+
+.cart-card-head {
+  border-bottom: 1px solid var(--gray-divider);
+  font-weight: bold;
+  font-size: 22px;
+}
+
+.cart-card-foot {
+  border-top: 1px solid var(--gray-divider);
+  font-weight: bold;
+  font-size: 22px;
+  background-color: var(--gray-divider);
+}

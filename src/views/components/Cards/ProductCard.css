@@ -1,0 +1,13 @@
+.product-card {
+  padding: 12px;
+  border-radius: 10px;
+  transition: all ease 150ms;
+  box-sizing: border-box;
+  width: 259px;
+  border: 1px solid var(--gray-divider);
+}
+
+.product-card:hover {
+  box-shadow: 1px 4px 8px #995900,
+    0px 2px 4px #3a140c;
+}

@@ -1,0 +1,24 @@
+.carousel-item-home-bg {
+  border-radius: 10px;
+  background: rgb(92, 56, 8);
+  background: linear-gradient(
+    150deg,
+    #3a140c,
+    #dd0000,
+    #ff9600
+  );
+}
+
+.carousel-item-home {
+  height: 300px;
+}
+
+.leftNav {
+  width: 14rem;
+}
+
+.leftContent {
+  left: -3.5cm;
+  position: relative;
+
+}

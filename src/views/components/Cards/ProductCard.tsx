@@ -1,0 +1,196 @@
+import React from "react";
+import { API_URL } from "../../../constants/API";
+import { fillCart } from "../../../redux/actions";
+import { connect } from "react-redux";
+import Axios from "axios";
+
+import "./ProductCard.css";
+import ButtonUI from "../Button/Button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart, faStar, faPlusSquare } from "@fortawesome/free-regular-svg-icons";
+import swal from "sweetalert";
+
+
+interface ProductCardData {
+  id?: number;
+  desc?: string;
+  productName?: string;
+  price?: number;
+  review?: number;
+  image?: string;
+  users?: number;
+  carts?: number;
+}
+
+type ProductCardProps = {
+  data?: ProductCardData;
+  className?: string;
+};
+
+class ProductCard extends React.Component<ProductCardProps> {
+  // state = {
+  //   productData: {
+  //     image: "",
+  //     productName: "",
+  //     price: 0,
+  //     desc: "",
+  //     category: "",
+  //     id: 0,
+  //   },
+  // };
+
+  // addToCartHandler = () => {
+  //   // POST method ke /cart
+  //   // Isinya: userId, productId, quantity
+  //   // console.log(this.props.user.id);
+
+  //   Axios.get(`${API_URL}/carts`, {
+  //     params: {
+  //       userId: this.props.user.id,
+  //       productId: this.state.productData.id,
+  //     },
+  //   }).then((res) => {
+  //     if (res.data.length) {
+  //       Axios.put(`${API_URL}/carts/${res.data[0].id}`, {
+  //         userId: this.props.user.id,
+  //         productId: this.state.productData.id,
+  //         quantity: res.data[0].quantity + 1,
+  //       })
+  //         .then((res) => {
+  //           swal(
+  //             "Add to cart",
+  //             "Your item has been added to your cart",
+  //             "success"
+  //           );
+  //           this.props.onFillCart(this.props.user.id);
+  //         })
+  //         .catch((err) => {
+  //           console.log(err);
+  //         });
+  //     } else {
+  //       Axios.post(`${API_URL}/carts`, {
+  //         userId: this.props.user.id,
+  //         productId: this.state.productData.id,
+  //         quantity: 1,
+  //       })
+  //         .then((res) => {
+  //           swal(
+  //             "Add to cart",
+  //             "Your item has been added to your cart",
+  //             "success"
+  //           );
+  //           this.props.onFillCart(this.props.user.id);
+  //         })
+  //         .catch((err) => {
+  //           console.log(err);
+  //         });
+  //     }
+  //   });
+  // };
+  addToCartHandler = (e, produkId) => {
+    // POST method ke /cart
+    // Isinya: userId, productId, quantity
+    // console.log(this.props.user.id);
+
+    Axios.get(`${API_URL}/carts`, {
+      params: {
+        userId: this.props.data.users,
+        productId: produkId,
+      },
+    }).then((res) => {
+      if (res.data.length) {
+        Axios.put(`${API_URL}/carts/${res.data[0].id}`, {
+          userId: this.props.data.users,
+          productId: produkId,
+          quantity: res.data[0].quantity + 1,
+        })
+          .then((res) => {
+            swal(
+              "Add to cart",
+              "Your item has been added to your cart",
+              "success"
+            );
+            this.props.onFillCart(this.props.data.users);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        Axios.post(`${API_URL}/carts`, {
+          userId: this.props.data.users,
+          productId: produkId,
+          quantity: 1,
+        })
+          .then((res) => {
+            swal(
+              "Add to cart",
+              "Your item has been added to your cart",
+              "success"
+            );
+            this.props.onFillCart(this.props.data.users);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    });
+  };
+
+  render() {
+    const {desc, productName, price, image } = this.props.data;
+
+    return (
+      <div className={`product-card d-inline-block ${this.props.className}`}>
+        <p>${this.props.data.id}</p>
+        <img
+          src={image}
+          alt={this.props.data.productName}
+          style={{ width: "auto", height: "auto", objectFit: "contain" }}
+        />
+        <div>
+          <p className="mt-3">{productName}</p>
+          <h5 style={{ fontWeight: "bolder" }}>
+            {new Intl.NumberFormat("id-ID", {
+              style: "currency",
+              currency: "IDR",
+            }).format(price)}
+          </h5>
+          <p className="small">{desc}</p>
+        </div>
+        <div className="d-flex flex-row align-items-center justify-content-between mt-2">
+          <div>
+            <div className="d-flex flex-row align-items-center justify-content-between">
+              {/* Render stars dynamically */}
+              <FontAwesomeIcon style={{ fontSize: "10px" }} icon={faStar} />
+              <FontAwesomeIcon style={{ fontSize: "10px" }} icon={faStar} />
+              <FontAwesomeIcon style={{ fontSize: "10px" }} icon={faStar} />
+              <FontAwesomeIcon style={{ fontSize: "10px" }} icon={faStar} />
+              <FontAwesomeIcon style={{ fontSize: "10px" }} icon={faStar} />
+              <small className="ml-2">4.5</small>
+            </div>
+          </div>
+          <ButtonUI
+            type="outlined"
+            style={{ fontSize: "12px", padding: "4px 8px" }}
+            onClick={(e) => this.addToCartHandler(e, this.props.data.id)}
+          >
+            {" "}
+            <FontAwesomeIcon icon={faPlusSquare} /> Tambah
+          </ButtonUI>
+        </div>
+      </div>
+    );
+  }
+}
+
+// const mapStateToProps = (state) => {
+//   return {
+//     user: state.user,
+//   };
+// };
+
+// const mapDispatchToProps = {
+//   onFillCart: fillCart,
+// };
+
+export default ProductCard;
