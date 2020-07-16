@@ -131,3 +131,11 @@
   content: none !important;
   border-radius: 0 10px 10px 0 !important;
 }
+
+.pricefiltermin {
+  border-radius: 0 !important;
+}
+
+.pricefiltermax {
+  border-radius: 0px 0px 10px 10px !important;
+}

@@ -2,7 +2,9 @@ import { API_URL } from "../../constants/API";
 import Axios from "axios";
 import swal from "sweetalert";
 
-export const addProduct = (pict, productData) => {
+export const addProduct = (pict, productData) => { //local
+  console.log(pict)
+  console.log("pict")
   return (dispatch) => {
     Axios.post(`${API_URL}/products/new`, productData)
 
@@ -15,12 +17,11 @@ export const addProduct = (pict, productData) => {
 
         .then((res) => {
           swal("Berhasil!", "Produk "+ productData.productname+ " berhasil ditambah", "success")
-          console.log(res.data);
-          console.log("berhasil gan")
+          
         })
         .catch((err) => {
-          console.log("error upload foto")
-          console.log(err.response.data.message)
+          swal("Perhatian!", "Produk "+ productData.productname+ " berhasil ditambah, foto tidak didaftarkan", "warning")
+          
         })
       })
       .catch((err) => {
@@ -35,53 +36,16 @@ export const addProduct = (pict, productData) => {
   }
 }
 
-export const getCategory = () => {
-  return (dispatch) => {
-    Axios.get(`${API_URL}/category`)
-    .then((res) => {
-      // console.log(res.data)
-      dispatch({
-        type: "GET_CATEGORY",
-        payload: res.data,
-      });
-    })
-    .catch((err) => {
-      console.log("ERROR CATEGORY");
-      console.log(err.response.data.message);
-    });
-  }
-}
-
-export const getProduct = () => {
-  return (dispatch) => {
-    Axios.get(`${API_URL}/products/all`)
-    .then((res) => {
-      console.log(res.data)
-      dispatch({
-        type: "GET_PRODUCT",
-        payload: res.data,
-      });
-    })
-    .catch((err) => {
-      console.log("ERROR PRODUK");
-      console.log(err.response.data.message);
-    });
-  }
-}
-
-export const addCategoryToProduct = (productId, cateId) => {
+export const addCategoryToProduct = (productId, cateId) => { //local
   return (dispatch) => {
     console.log(productId, cateId)
     Axios.post(`${API_URL}/products/${productId}/category/${cateId}`)
     .then((res) => {
-      console.log(res.data)
+
       swal("Berhasil!", "Kategori berhasil ditambahkan ke " + res.data.productname+ "success")
     })
     .catch((err) => {
-      console.log("ERROR addCTP");
-      console.log(err);
       swal("Gagal!", err.response.data.message ,"error")
-      console.log(err.response.data.message);
     });
   }
 }
@@ -91,13 +55,49 @@ export const deleteCategoryFromProduct = (productId, cateId) => {
     console.log(productId, cateId)
     Axios.delete(`${API_URL}/products/${productId}/cate/${cateId}/del`)
     .then((res) => {
-      console.log(res.data)
+      
       swal("Berhasil!", "Kategori berhasil dihapus dari " + res.data.productname ,"success")
     })
     .catch((err) => {
-      console.log("ERROR addCTP");
-      console.log(err);
       swal("Gagal!", err.response.data.message ,"error")
+      console.log(err.response.data.message);
+    });
+  }
+}
+
+export const editProduct = (productData, pict) => { //local
+  console.log(pict)
+  return (dispatch) => {
+    Axios.put(`${API_URL}/products/edit/${productData.id}`, productData)
+    .then((res) => {
+      console.log(res.data.productname)
+
+      Axios.put(`${API_URL}/products/pict/${productData.id}`, pict)
+
+        .then((res) => {
+          swal("Berhasil!", "Produk "+ productData.productname+ " berhasil diubahh", "success")
+          
+        })
+        .catch((err) => {
+          swal("Perhatian!", "Produk "+ productData.productname+ " berhasil diubah, foto tidak di ubah", "warning")
+          
+        })
+    })
+    .catch((err) => {
+      console.log("ERROR put");
+      console.log(err.response.data.message);
+    });
+  }
+}
+
+export const deleteProduct = (nama, produkId) => { //local
+  return (dispatch) => {
+    Axios.delete(`${API_URL}/products/${produkId}`)
+    .then((res) => {
+      console.log(res.data.productname)
+      swal("Berhasil!", "Produk "+nama+" berhasil dihapus", "success")
+    })
+    .catch((err) => {
       console.log(err.response.data.message);
     });
   }
