@@ -1,57 +1,68 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Redirect, Link } from "react-router-dom";
-import Cookies from "universal-cookie";
 
 import TextField from "../../components/TextField/TextField";
 import ButtonUI from "../../components/Button/Button";
 import "./AuthScreen.css";
+import { resetPassword } from "../../../redux/actions";
 
 
 class ResetPassowrd extends React.Component{
     state = {
-        email: ""
+        password: "",
+        token: "",
+        showPassword: false,
     }
-
-    componentDidUpdate() {
-        if (this.props.user.id) {
-          const cookie = new Cookies();
-          cookie.set("authData", JSON.stringify(this.props.user), { path: "/" });
-        }
-      }
+    inputHandler = (e) => {
+      const { value } = e.target;
+      this.setState({password: value});
+    };
     
-      inputHandler = (e) => {
-        const { value } = e.target;
-        this.setState({email: value});
-      };
-    
-      forgotBtnHandler = () => {    
-        this.props.onRegister(this.state.email);
-      };
+    resetBtnHandler = () => {
+      let body = {
+        password: this.state.password,
+        token: this.props.match.params.token
+      }    
+      this.props.onReset(body);
+    };
 
-    renderRegisterComponent(){
+    checkBoxHandler = (e) => {
+      const { checked } = e.target;
+      this.setState({ showPassword: checked, });
+    };  
+
+    renderComponent(){
         return (
          <div className="">     
           <div className="mt-4">
             
             <h4 className="">Atur ulang kata sandi</h4>
-            <p className="mt-3 row">
-            Masukkan Email yang terdaftar. <br/>
-            Kami akan mengirimkan tautan untuk mengubah kata sandi anda
+            <p className="mt-2 row">
+            Masukan kata sandi baru anda
             </p>
             <TextField
               value={this.state.email}
-              onChange={(e) => this.inputHandler(e, "email")}
-              placeholder="Email"
+              onChange={(e) => this.inputHandler(e, "password")}
+              placeholder="kata sandi"
               className="mt-4"
+              type={this.state.showPassword ? "text" : "password"}
             />
+            <div className="row container-fluid">
+              <input
+              type="checkbox"
+              onChange={(e) => this.checkBoxHandler(e)}
+              name="showPasswordRegister"
+              className="material-icons mt-2"
+              /><p className="pl-1 pt-1">tampilkan kata sandi</p>
+            </div>
             <div >
               <ButtonUI
                 type="contained"
-                onClick={this.forgotBtnHandler}
+                onClick={this.resetBtnHandler}
                 className="mt-2 mb-2 auth-wide-btn"
               >
-                Kirim
+                Ubah
               </ButtonUI>
             </div>
           </div>
@@ -59,6 +70,32 @@ class ResetPassowrd extends React.Component{
         );
     
       }
+
+    renderErrMsg() {
+      console.log(this.props.user.errMsg)
+      if (this.props.user.errMsg == "success" ) {
+        return(
+          <div className="alert alert-success mt-3">
+            <p>
+              Ubah kata sandi berhasil!{" "}
+              <Link to="/auth-login">
+                Masuk
+              </Link>
+            </p>
+          </div>
+        )
+      } else if (this.props.user.errMsg) {
+        return(
+          <div className="alert alert-danger mt-3">
+            <Link to="/">
+              terjadi kesalahan!
+            </Link>
+          </div>
+        )
+      } else {
+        return(null)
+      }
+    }
 
     render() {
         if (this.props.user.id > 0) {
@@ -73,12 +110,8 @@ class ResetPassowrd extends React.Component{
           </div>
             <div className="mt-5">
               <div className="col-5 card mx-auto">
-                {this.props.user.errMsg ? (
-                  <div className="alert alert-danger mt-3">
-                    {this.props.user.errMsg}
-                  </div>
-                ) : null}
-                {this.renderRegisterComponent()}
+                {this.renderComponent()}
+                {this.renderErrMsg()}
               </div>
             </div>
           </div>
@@ -92,4 +125,8 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps)(ResetPassowrd);
+const mapDispatchToProps = {
+  onReset : resetPassword,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ResetPassowrd);

@@ -10,6 +10,7 @@
   letter-spacing: 0.3px;
   width: fit-content;
   transition: all ease-in-out 100ms;
+  border-radius: 10px;
 }
 
 .custom-btn:hover {

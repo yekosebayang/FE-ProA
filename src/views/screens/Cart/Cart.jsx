@@ -68,7 +68,7 @@ class Cart extends React.Component {
                 alt=""
                 style={{
                   width: "100px",
-                  height: "150px",
+                  height: "100px",
                   objectFit: "contain",
                 }}
               />
@@ -226,9 +226,10 @@ class Cart extends React.Component {
   render() {
     if (this.state.cartData.length) {
       return (
-        <div className="py-4" style={{ padding: "0px 240px" }}>
+        <div className="container-fluid">
           <div className="row">
-            <div className="col-8">
+            <div className="col-1"></div>
+            <div className="col py-2 px-1">
               <table className="cart-table">
                 <thead>
                   <tr>
@@ -242,14 +243,14 @@ class Cart extends React.Component {
                 <tbody>{this.renderCartData()}</tbody>
               </table>
             </div>
-            <div className="col-4">
+            <div className="col-3 py-2 px-1">
               <div className="cart-card">
                 <div className="cart-card-head p-4">Order Summary</div>
                 <div className="cart-card-body p-4">
                   <div className="d-flex justify-content-between my-2">
                     <div>Subtotal</div>
                     <strong>
-                      {priceFormatter(this.renderSubTotalPrice())}
+                      {}
                     </strong>
                   </div>
                   <div className="d-flex justify-content-between my-2">
@@ -276,15 +277,16 @@ class Cart extends React.Component {
                     <div>Total</div>
                     <div>{priceFormatter(this.renderTotalPrice())}</div>
                   </div>
-                </div>
-              </div>
               <input
                 onClick={this.checkoutHandler}
                 type="button"
                 value="Checkout"
                 className="btn btn-success btn-block mt-3"
               />
+                </div>
+              </div>
             </div>
+            <div className="col-1 bg"></div>
           </div>
         </div>
       );
@@ -292,9 +294,13 @@ class Cart extends React.Component {
       return (
         <div className="container py-4">
           <div className="row">
-            <div className="col-12">
-              <div className="alert alert-info">Shopping Cart Empty</div>
+            <div className="col-4"></div>
+            <div className="col-4">
+              <div className="alert alert-info">Keranjang kosong?{" "}
+                <Link to="/">Pesan sekarang!</Link>
+              </div>
             </div>
+            <div className="col-4"></div>
           </div>
         </div>
       );

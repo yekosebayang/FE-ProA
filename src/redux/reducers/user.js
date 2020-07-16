@@ -5,24 +5,30 @@ const { ON_LOGIN_FAIL, ON_LOGIN_SUCCESS, ON_LOGOUT_SUCCESS } = userTypes;
 const init_state = {
   id: 0,
   username: "",
-  fullName: "",
+  useremail: "",
   address: {},
-  role: "",
+  userrole: "",
+  userrealname: "",
+  userphone: "",
   errMsg: "",
   cookieChecked: false,
   cartItems: 0,
+  verified: ""
 };
 
 export default (state = init_state, action) => {
   switch (action.type) {
     case ON_LOGIN_SUCCESS:
-      const { username, fullName, role, id } = action.payload;
+      const { username, useremail, userrole, id, verified, userrealname, userphone } = action.payload;
       return {
         ...state,
-        username,
-        fullName,
-        role,
         id,
+        username,
+        useremail,
+        userrole,
+        userrealname,
+        userphone,
+        verified,
         cookieChecked: true,
       };
     case ON_LOGIN_FAIL:
@@ -32,9 +38,11 @@ export default (state = init_state, action) => {
     case ON_LOGOUT_SUCCESS:
       return { ...init_state, cookieChecked: true };
     case "COOKIE_CHECK":
-      return { ...state, cookieChecked: true };
+      return { ...state,  id: 0, cookieChecked: true };
     case "FILL_CART":
       return { ...state, cartItems: action.payload };
+    case "RESET_ERRMSG":
+      return { ...state, errMsg: action.payload }; 
     default:
       return { ...state };
   }

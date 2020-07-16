@@ -6,20 +6,21 @@ import { connect } from "react-redux";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.css";
 
-import Base_ from "./views/screens/Home/base";
-import Home from "./views/screens/Home/Home";
+import BaseC from "./views/screens/Home/base";
 import Navbar from "./views/components/Navbar/Navbar";
 import ProductDetails from "./views/screens/ProductDetails/ProductDetails";
 import Cart from "./views/screens/Cart/Cart";
+import User from "./views/screens/User/user";
 import AdminDashboard from "./views/screens/Admin/AdminDashboard";
-import { userKeepLogin, cookieChecker } from "./redux/actions";
+import { userKeepLogin, cookieChecker, resetErrmsg, signBtnHandler } from "./redux/actions";
 import Payments from "./views/screens/Admin/Payments";
 import PageNotFound from "./views/screens/PageNotFound";
 import History from "./views/screens/History/History";
 import Report from "./views/screens/Admin/Report";
-import ResetPassowrd from "./views/screens/Auth/ResetPassword";
 import RegisterScreen from "./views/screens/Auth/RegisterScreen";
 import LoginScreen from "./views/screens/Auth/LoginScreen";
+import ForgetPassword from "./views/screens/Auth/ForgetPassword";
+import ResetPassword from "./views/screens/Auth/ResetPassword";
 
 const cookieObj = new Cookie();
 
@@ -38,7 +39,7 @@ class App extends React.Component {
     if (this.props.user.role === "admin") {
       return (
         <>
-          <Route exact path="/admin-dashboard" component={AdminDashboard} />
+          {/* <Route exact path="/admin-dashboard" component={AdminDashboard} /> */}
           <Route exact path="/admin-payments" component={Payments} />
           <Route exact path="/admin-report" component={Report} />
         </>
@@ -50,6 +51,7 @@ class App extends React.Component {
     if (this.props.user.id) {
       return (
         <>
+          <Route exact path="/user" component={User}/>
           <Route exact path="/cart" component={Cart} />
           <Route exact path="/history" component={History} />
         </>
@@ -61,9 +63,11 @@ class App extends React.Component {
     return (
       <>
        <Switch>
-          <Route exact path="/reset-password" component={ResetPassowrd} />
+          <Route exact path="/forgot-password" component={ForgetPassword} />
+          <Route exact path="/reset-password/:token" component={ResetPassword} />
           <Route exact path="/auth-register" component={RegisterScreen} />
           <Route exact path="/auth-login" component={LoginScreen} />
+          <Route exact path="/admin-dashboard" component={AdminDashboard} />
         </Switch>
           <div style={{ height: "120px" }} />
       </>
@@ -75,7 +79,8 @@ class App extends React.Component {
       <>          
         <Navbar />
           <Switch>
-            <Route exact path="/" component={Base_} />
+            <Route exact path="/" component={BaseC} />
+            {/* <Route exact path="/user" component={User}/> */}
             {/* <Route exact path="/" component={Home} /> */}
             <Route exact path="/product/:productId" component={ProductDetails} />
             {this.renderAdminRoutes()}
@@ -93,7 +98,9 @@ class App extends React.Component {
         {
         window.location.pathname === "/" || window.location.pathname === "/product/:productId" ||
         window.location.pathname === "/cart" || window.location.pathname === "/history" ||
-        window.location.pathname === "/admin-dashboard" || window.location.pathname === "/admin-payment"
+        // window.location.pathname === "/admin-dashboard" || window.location.pathname === "/admin-payment" ||
+         window.location.pathname === "/admin-payment" ||
+        window.location.pathname ==="/user"
         ? (
           this.renderNavbarScreen()       
           ) : (
@@ -111,12 +118,13 @@ class App extends React.Component {
 const mapStateToProps = (state) => {
   return {
     user: state.user,
+    sign: state.sign,
   };
 };
 
 const mapDispatchToProps = {
   keepLogin: userKeepLogin,
-  cookieChecker,
+  cookieChecker, resetErrmsg, signBtnHandler
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(App));

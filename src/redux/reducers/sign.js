@@ -1,5 +1,5 @@
 const init_state = {
-    signValue: "register",
+    signValue: "false",
   };
   
   export default (state = init_state, action) => {

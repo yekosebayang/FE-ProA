@@ -70,6 +70,7 @@ h6 {
   font-size: 16px;
   line-height: 22px;
   letter-spacing: 0.1px;
+  
 }
 
 .subtitle-sm {
@@ -79,6 +80,7 @@ h6 {
   font-size: 14px;
   line-height: 18px;
   letter-spacing: 0.2px;
+  
 }
 
 p {
@@ -89,6 +91,7 @@ p {
   /* line-height: 22px; */
   letter-spacing: 0.3px;
   margin: 0 !important;
+  
 }
 
 p.small {
@@ -98,6 +101,7 @@ p.small {
   font-size: 14px;
   /* line-height: 20px; */
   letter-spacing: 0.2px;
+  
 }
 
 small {
@@ -107,6 +111,7 @@ small {
   font-size: 12px;
   line-height: 16px;
   letter-spacing: 0.2px;
+
 }
 
 caption {
@@ -117,6 +122,7 @@ caption {
   line-height: 18px;
   letter-spacing: 0.4px;
   text-transform: uppercase;
+  /* color: var(--black) !important; */
 }
 
 .price {
@@ -135,7 +141,4 @@ caption {
   font-size: 14px;
   line-height: 18px;
   letter-spacing: 0.3px;
-}
-
-.Link {
 }

@@ -1,0 +1,36 @@
+.profile-box {
+  border-radius: 10px;
+  border: 1px solid var(--gray-dark);
+}
+
+.listNav-group-flush {
+  border-radius: 0px 0px 10px 10px !important;
+}
+
+.list-group-item:hover {
+  box-shadow: 
+  1px 1px 1px 1px #995900,
+  1px 1px 1px 1px #3a140c;
+}
+
+.custom-text-profile {
+  /* background-color: var(--gray-lightest); */
+  border:1px solid var(--gray-default);
+  padding: 0px 16px;
+  font-size: 16px;
+  height: 12%;
+  width: 75%;
+  /* outline: none; */
+  transition: all ease 150ms;
+  font-family: Muli;
+  border-radius: 10px;
+}
+
+.custom-text-profile.active {
+  border: 1px solid var(--accent-default);
+}
+
+.custom-text-profile:valid {
+  color: var(--black);
+}
+

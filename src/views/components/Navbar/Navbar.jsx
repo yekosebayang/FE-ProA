@@ -20,7 +20,7 @@ import { faUser } from "@fortawesome/free-regular-svg-icons";
 import "./Navbar.css";
 import TextField from "../TextField/TextField";
 import ButtonUI from "../Button/Button";
-import { logoutHandler, navbarInputHandler,loginHandler } from "../../../redux/actions";
+import { logoutHandler, navbarInputHandler,loginHandler, resetErrmsg, verifEmail, signBtnHandler } from "../../../redux/actions";
 
 const CircleBg = ({ children }) => {
   return <div className="circle-bg">{children}</div>;
@@ -31,18 +31,22 @@ class Navbar extends React.Component {
     searchBarIsFocused: false,
     searcBarInput: "",
     dropdownOpen: false,
-    modalOpen: false,
+    modalOpen: {
+      login: false,
+      verif: false,
+      forgt: false
+    },
     loginForm: {
       username: "",
       password: "",
       showPassword: false,
     },
+    verifiedChange: this.props.user.verified,
   };
 
-  componentDidUpdate() { //this guy check if the cookie added, when it added. we go to render
-    if (this.props.user.id) {
-      const cookie = new Cookies();
-      cookie.set("authData", JSON.stringify(this.props.user), { path: "/" });
+  componentDidMount() {
+    if (this.props.user.errMsg != "") {
+      this.props.resetErrmsg()
     }
   }
 
@@ -73,7 +77,16 @@ class Navbar extends React.Component {
         [field]: value,
       },
     });
+    // console.log(field +": "+ this.state.loginForm[field])
   };
+
+  verifBtnHandler = () => {
+    const { id, username, useremail} = this.props.user
+    let user = {
+      id, username, useremail
+    }
+    this.props.verifEmail(user)
+  }
 
   loginBtnHandler = () => {
     const { username, password } = this.state.loginForm;
@@ -84,20 +97,24 @@ class Navbar extends React.Component {
     this.props.onLogin(User);
   }
 
-  // modal 
-  toggleModal = () => { //untuk tutup/buka modal
-    this.setState({modalOpen: !this.state.modalOpen})
-  }
+  toggleModal = (modal)=> {
+    this.setState({
+      modalOpen: {
+        ...this.state.modalOpen,
+        [modal]: !this.state.modalOpen[modal],
+      },
+    });
+  };
 
   renderModalLogIn(){
     if (!this.props.user.id ) {
       return(
         <Modal
-          toggle={this.toggleModal} // pemanggil tutup buka
-          isOpen={this.state.modalOpen} // si trigger buka
+          toggle={(e) => this.toggleModal("login")} // pemanggil tutup buka
+          isOpen={this.state.modalOpen.login} // si trigger buka
           className="modal-login"
         >
-          <ModalHeader className="modal-login-header" toggle={this.toggleModal}></ModalHeader>
+          <ModalHeader className="modal-login-header" toggle={(e) => this.toggleModal("login")}></ModalHeader>
           <ModalBody>
            <div className="row mb-4">
               <div className="col-auto mr-auto ml-3">
@@ -105,32 +122,34 @@ class Navbar extends React.Component {
               </div>
               <div className="col-auto mr-1">
                <ButtonUI type="textual" className="mt-1">
-                <Link to="/auth-register">Daftar</Link>
+                <Link style={{ color: "inherit", textDecoration: "inherit"}} to="/auth-register">Daftar</Link>
                </ButtonUI>
               </div>
            </div>
            <div>
               {/* <p className="ml-3">Username</p> */}
               <TextField
-                value={this.state.loginForm.username}
+                // value={this.state.loginForm.username}
                 onChange={(e) => this.inputHandler(e, "username")} 
                 placeholder="Alamat e-mail"
                 className="mb-1 login-modal-text"
                 />
               {/* <p className="ml-3 mt-">Password</p> */}
               <TextField
-                value={this.state.loginForm.password}
+                // value={this.state.loginForm.password}
                 onChange={(e) => this.inputHandler(e, "password")} 
                 placeholder="Kata Sandi"
                 className="login-modal-text mt-3"
                 type={this.state.loginForm.showPassword ? "text" : "password"}
                 />
+              <div className="row container-fluid">
               <input
                   type="checkbox"
                   onChange={(e) => this.checkBoxHandler(e)}
                   name="showPasswordRegister"
                   className="material-icons mt-2"
-                  />{" "}tampilkan kata sandi      
+                  /><p className="pl-1 pt-1">tampilkan kata sandi</p>
+              </div>
               <div>
             </div>
               <ButtonUI className="mt-3 login-modal-btn" type="outlined" onClick={this.loginBtnHandler}
@@ -139,8 +158,8 @@ class Navbar extends React.Component {
             <div className="row mt-2">
              <div className="col-auto mr-auto ml-3"></div>
             <div className="col-auto mr-1">
-               <ButtonUI type="textual" className="mt-1" onClick={this.toggleModal}>
-                 <Link to="/reset-password">
+               <ButtonUI type="textual" className="mt-1" onClick={(e) => this.toggleModal("forgt")}>
+                 <Link to="/forgot-password" style={{ color: "inherit", textDecoration: "inherit"}} >
                   Lupa Kata Sandi?
                  </Link>
                </ButtonUI>
@@ -159,7 +178,55 @@ class Navbar extends React.Component {
     }
   }
 
+  renderModalVerif(){
+    // if (!this.props.user.id) {
+      return(
+        <Modal
+          toggle={(e) => this.toggleModal("verif")} // pemanggil tutup buka
+          isOpen={this.state.modalOpen.verif} // si trigger buka
+          className="modal-login"
+        >
+          <ModalHeader className="modal-login-header" toggle={(e) => this.toggleModal("verif")}></ModalHeader>
+          <ModalBody>
+           <div className="row mb-4">
+              <div className="col-auto mr-auto ml-3">
+               <h4>Verifikasi</h4>
+              </div>
+           </div>
+           <div>
+              <div className=" textPreview">
+                {this.props.user.useremail}
+              </div>
+              <ButtonUI className="mt-3 login-modal-btn" type="outlined" onClick={(e) => this.verifBtnHandler()}
+              >Kirim</ButtonUI>
+            </div>
+            <div className="row mt-2">
+             <div className="col-auto mr-auto ml-3"></div>
+           </div>
+           {this.props.user.errMsg ? (
+          <div className="row justify-content-center  mt-1">
+            <div className="alert alert-success">
+                <p>{this.props.user.errMsg}</p>
+            </div>
+          </div>  
+            ) : null}
+          </ModalBody>
+        </Modal>
+      )
+    // }
+  }
+
   logoutBtnHandler = () => {
+  const cookieObj = new Cookies();
+
+    this.setState({
+      modalOpen: false, 
+      loginForm: {
+      username: "",
+      password: "",
+      showPassword: false,
+      },
+    })
     this.props.onLogout();
   };
 
@@ -170,16 +237,17 @@ class Navbar extends React.Component {
 
   renderMenuNav(){
     if (this.props.user.id) {
-       return(         
-          <>
-          <Dropdown
+       return(
+        <div className="container">         
+          <div className="row">
+          <Dropdown className="col-3"
             toggle={this.toggleDropdown}
             isOpen={this.state.dropdownOpen}
           >
             {this.props.user.id ? (this.toggleDropdown) : null}
-            <DropdownToggle tag="div" className="d-flex">
+            <DropdownToggle className="d-flex" tag="div" >
               <FontAwesomeIcon icon={faUser} style={{ fontSize: 24 }} />
-              <p className="small ml-3 mr-4">{this.props.user.username}</p>
+              <p className="small ml-2 mr-4">{this.props.user.username}</p>
             </DropdownToggle>
             <DropdownMenu className="mt-2">
               {this.props.user.role == "admin" ? (
@@ -212,8 +280,7 @@ class Navbar extends React.Component {
               )}
             </DropdownMenu>
           </Dropdown>
-          <Link
-            className="d-flex flex-row"
+          <Link className="col-2 d-flex" //cart
             to="/cart"
             style={{ textDecoration: "none", color: "inherit" }}
           >
@@ -228,50 +295,74 @@ class Navbar extends React.Component {
               </small>
             </CircleBg>
           </Link>
-          <ButtonUI
+          <ButtonUI className="col ml-0 mt-1" //log aut
             onClick={this.logoutBtnHandler}
-            className="ml-3"
             type="textual"
           >
             Logout
           </ButtonUI>
-        </>
+          </div>
+        </div>
        )
     } else {
       return (
-      <>
-        <ButtonUI className="mr-3" type="textual" 
-          // onClick={(e) => this.SignInOnBtnHandler("")}
-          onClick={(e) => this.toggleModal()}
-        >
-          Sign in
-        </ButtonUI>
-        <ButtonUI type="contained">
-          <Link
-          style={{ textDecoration: "none", color: "inherit" }}
-          to="/auth-register"
-          >
-          Sign up
-          </Link>
-        </ButtonUI>
-      </>
+        <div className="container">
+          <div className="row">
+            <div className=" mr-3"></div>
+            <Link className="col-3 mr-3"
+              style={{ textDecoration: "none", color: "inherit" }}>
+              <ButtonUI type="outlined" 
+                // onClick={(e) => this.SignInOnBtnHandler("")}
+                onClick={(e) => this.toggleModal("login")}
+              >Masuk
+              </ButtonUI> 
+            </Link>
+            <Link className="col-3 ml-1"
+              style={{ textDecoration: "none", color: "inherit" }}
+              to="/auth-register">
+            <ButtonUI type="contained" // regis
+            >Daftar</ButtonUI>
+            </Link>
+          </div>
+        </div>
+      )
+    }
+  }
+
+  renderVerifAlert(){
+    if (this.props.user.id && this.props.user.verified == "belum") {
+      return(
+        <div className="container-fluid row sticky-top">
+          <div className="col-1"></div>
+          <div className="col cardVerif">
+            <p className="textVerif">Verifikasi akun kamu untuk kenyamanan berbelanja, dan keamanan{" "}
+            <Link onClick={(e) => this.toggleModal("verif")}
+            style={{ color: "#995900" }}
+            >
+              Verifikasi
+            </Link>
+            </p>
+            {/* <p>{this.props.user.verified}</p> */}
+          </div>
+          <div className="col-1"></div>
+          {this.renderModalVerif()}
+        </div>
       )
     }
   }
 
   render() {
     return (
-      // <div className="navbar navbar-expand-lg navbar-light bg-light sticky-top">
-      <div className="d-flex justify-content-between align-items-center py-2 navbar-container" style={{border: "none"}}>
-        <div className="logo-text">
+    <div className="container">
+      <div className="row" style={{border: "none"}}>
+        <div className="col-2 pt-1 logo-text">
           <Link style={{ textDecoration: "none", color: "inherit" }} to="/">
+            <h2>
             LOGO
+            </h2>
           </Link>
         </div>
-        <div
-          style={{ flex: 1 }}
-          className="px-5 d-flex flex-row justify-content-start"
-        >
+        <div className="col pl-2 pt-1">
           <input
             onChange={this.props.onChangeSearch}
             onFocus={this.onFocus}
@@ -280,23 +371,20 @@ class Navbar extends React.Component {
               this.state.searchBarIsFocused ? "active" : null
             }`}
             type="text"
-            placeholder="Cari produk impianmu disini"
+            placeholder="mau makan apa?"
           />
         </div>
-        <div className="d-flex flex-row align-items-center">
+        <div className="col-3 pt-1 row align-items-center">
           {this.renderMenuNav()}
-        </div> 
+        </div>
         {/* bottom of the page*/}
+      </div>
+        {this.renderVerifAlert()}
         {this.renderModalLogIn()}
-      </div> 
-      // </div>
+    </div>
     );
   }
 }
-
-
-
-
 
 const mapStateToProps = (state) => {
   return {
@@ -308,6 +396,7 @@ const mapDispatchToProps = {
   onLogout: logoutHandler,
   onChangeSearch: navbarInputHandler,
   onLogin: loginHandler,
+  resetErrmsg, verifEmail, signBtnHandler
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Navbar);

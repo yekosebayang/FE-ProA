@@ -1,14 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Redirect, Link } from "react-router-dom";
-import Cookies from "universal-cookie";
 
 import TextField from "../../components/TextField/TextField";
 import ButtonUI from "../../components/Button/Button";
 import "./AuthScreen.css";
 
 // actions
-import { registerHandler } from "../../../redux/actions";
+import { registerHandler, resetErrmsg } from "../../../redux/actions";
 
 class RegisterScreen extends React.Component {
   state = {
@@ -20,6 +19,12 @@ class RegisterScreen extends React.Component {
       showPassword: false,
     },
   };
+  
+  componentDidMount() {
+    if (this.props.user.errMsg != "") {
+      this.props.resetErrmsg()
+    }
+  }
 
   checkBoxHandler = (e)=> {
     const { checked } = e.target;
@@ -34,12 +39,6 @@ class RegisterScreen extends React.Component {
     });
   };
 
-  componentDidUpdate() {
-    if (this.props.user.id) {
-      const cookie = new Cookies();
-      cookie.set("authData", JSON.stringify(this.props.user), { path: "/" });
-    }
-  }
 
   inputHandler = (e, field) => {
     const { value } = e.target;
@@ -57,7 +56,8 @@ class RegisterScreen extends React.Component {
       username,
       fullName,
       password,
-      email,
+      // email, //3000
+      useremail: email, //8081 
     };
 
     this.props.onRegister(newUser);
@@ -72,7 +72,7 @@ class RegisterScreen extends React.Component {
         <p className="mt-2 card-text row">
           Sudah mendaftar?
           <ButtonUI className="mt-1 ml-1" type="textual">
-            <Link to="/auth-login">Masuk</Link>
+            <Link style={{ color: "inherit", textDecoration: "inherit"}} to="/auth-login">Masuk</Link>
           </ButtonUI>
         </p>
         <TextField
@@ -94,13 +94,14 @@ class RegisterScreen extends React.Component {
           className="mt-2"
           type={this.state.registerForm.showPassword ? "text" : "password"}
         />
-        <input
-          type="checkbox"
-          onChange={(e) => this.checkBoxHandler(e)}
-          className="mt-3"
-          name="showPasswordRegister"
-        />{" "}
-        Show Password
+        <div className="row container-fluid">
+          <input
+            type="checkbox"
+            onChange={(e) => this.checkBoxHandler(e)}
+            name="showPasswordRegister"
+            className="material-icons mt-2"
+            /><p className="pl-1 pt-1">tampilkan kata sandi</p>
+        </div>
         <div >
           <ButtonUI
             type="contained"
@@ -152,6 +153,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   onRegister: registerHandler,
+  resetErrmsg
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(RegisterScreen);

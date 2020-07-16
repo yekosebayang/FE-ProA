@@ -1,11 +1,10 @@
 .carousel-item-home-bg {
   border-radius: 10px;
-  background: rgb(92, 56, 8);
   background: linear-gradient(
-    150deg,
-    #3a140c,
-    #dd0000,
-    #ff9600
+    180deg,
+    var(--accent-dark),
+    var(--accent-default),
+    var(--accent-light)
   );
 }
 
@@ -13,12 +12,22 @@
   height: 300px;
 }
 
-.leftNav {
-  width: 14rem;
+.cardNav {
+  border: 0 !important;
 }
 
-.leftContent {
-  left: -3.5cm;
-  position: relative;
+.cardNav-header {
+  background-color: var(--accent-default) !important;
+  border: 1px var(--black) !important;
+  border-radius:10px 10px 0px 0px !important; /*ak ka kb bk*/
+}
 
+.listNav-group-flush {
+  border-radius: 0px 0px 10px 10px !important;
+}
+
+.list-group-item:hover {
+  box-shadow: 
+  1px 1px 1px 1px #995900,
+  1px 1px 1px 1px #3a140c;
 }

@@ -1,14 +1,3 @@
-/* :root {
-  --accent-default: #3c64b1;
-  --accent-dark: #1e4693;
-  --accent-light: #5a82cf;
-  --gray-lightest: #f4f5f4;
-  --gray-divider: #e2e5e6;
-  --gray-default: #c3cbcd;
-  --gray-dark: #737b7d;
-  --black: #373f41;
-} */
-
 .cart-table td {
   width: 1%;
   white-space: nowrap;

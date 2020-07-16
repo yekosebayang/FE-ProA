@@ -1,14 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Redirect, Link } from "react-router-dom";
-import Cookies from "universal-cookie";
 
 import TextField from "../../components/TextField/TextField";
 import ButtonUI from "../../components/Button/Button";
 import "./AuthScreen.css";
 
 // actions
-import { loginHandler } from "../../../redux/actions";
+import { loginHandler, resetErrmsg } from "../../../redux/actions";
 
 class LoginScreen extends React.Component {
   state = {
@@ -19,10 +18,9 @@ class LoginScreen extends React.Component {
     }
   };
 
-  componentDidUpdate() { //this guy check if the cookie added, when it added. we go to render
-    if (this.props.user.id) {
-      const cookie = new Cookies();
-      cookie.set("authData", JSON.stringify(this.props.user), { path: "/" });
+  componentDidMount() {
+    if (this.props.user.errMsg != "") {
+      this.props.resetErrmsg()
     }
   }
 
@@ -63,7 +61,7 @@ class LoginScreen extends React.Component {
         <p className="mt-2 card-text row">
           Belum mendaftar?
           <ButtonUI className="mt-1 ml-1" type="textual">
-            <Link to="/auth-register">Daftar</Link>
+            <Link style={{ color: "inherit", textDecoration: "inherit"}} to="/auth-register">Daftar</Link>
           </ButtonUI>
         </p>
         <TextField
@@ -79,13 +77,14 @@ class LoginScreen extends React.Component {
           className="mt-2"
           type={this.state.loginForm.showPassword ? "text" : "password"}
         />
-        <input
-          type="checkbox"
-          onChange={(e) => this.checkBoxHandler(e)}
-          className="mt-3"
-          name="showPasswordLogin"
-        />{" "}
-        Show Password
+        <div className="row container-fluid">
+          <input
+            type="checkbox"
+            onChange={(e) => this.checkBoxHandler(e)}
+            name="showPasswordRegister"
+            className="material-icons mt-2"
+            /><p className="pl-1 pt-1">tampilkan kata sandi</p>
+        </div>
         <div >
           <ButtonUI
             type="contained"
@@ -94,6 +93,16 @@ class LoginScreen extends React.Component {
           >
             Masuk
           </ButtonUI>
+        </div>
+        <div className="row" >
+          <div className="col"></div>
+          <div className="col-auto mr-1">
+              <ButtonUI type="textual" className="mt-1">
+                <Link to="/forgot-password" style={{ color: "inherit", textDecoration: "inherit"}} >
+                  Lupa Kata Sandi?
+                </Link>
+              </ButtonUI>
+          </div>
         </div>
       </div>
      </div>  
@@ -116,11 +125,11 @@ class LoginScreen extends React.Component {
           {this.renderLoginComponent()}
         </div>
         {this.props.user.errMsg ? (
-        <div className="row justify-content-center  mt-1">
-          <div className="alert alert-danger">
+          <div className="row justify-content-center  mt-1">
+            <div className="alert alert-danger">
               <p>{this.props.user.errMsg}</p>
-          </div>
-        </div>  
+            </div>
+          </div>  
           ) : null}
       </div>
     </div>
@@ -136,6 +145,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   onLogin: loginHandler,
+  resetErrmsg,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);

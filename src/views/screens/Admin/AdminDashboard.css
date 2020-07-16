@@ -1,11 +1,14 @@
 .dashboard {
-  border-left: 1px solid #dbdde0;
-  border-right: 1px solid #dbdde0;
-  border-top: 1px solid #dbdde0;
+  border-left: 1px solid var(--black);
+  border-right: 1px solid var(--black);
+  border-top: 1px solid var(--black);
+  border-bottom: 1px solid var(--black);
+  border-radius: 10px 10px 0px 0px;
 }
 
 .dashboard-table {
   width: 100%;
+  text-align: center;
 }
 
 .dashboard-table th,
@@ -13,14 +16,28 @@
 .dashboard-table td {
   border-top: 1px solid #dbdde0;
   border-bottom: 1px solid #dbdde0;
-  padding: 19px 0px 19px 24px;
+  padding: 10px 0px;
 }
 
 .dashboard-table thead tr,
 .dashboard-table thead th {
-  background-color: #f4f5f4;
+  background-color: var(--gray-divider);
   border-top: 0px !important;
+  height: 16px !important;
 }
+
+.dashboard-table tbody tr,
+.dashboard-table tbody th {
+  margin: 0px;
+}
+
+.dashboard-table tfoot tr,
+.dashboard-table tfoot th {
+  background-color: var(--gray-divider);
+  border-top: 0px !important;
+  height: 16px !important;
+}
+
 
 .dashboard-table tr:hover {
   cursor: pointer;
@@ -73,4 +90,44 @@
 .edit-modal img {
   height: 160px;
   object-fit: contain;
+}
+
+.custom-head {
+  border: 1px var(--gray-dark) ;
+  color: var(--accent-light) !important;
+}
+
+.custom-head:hover {
+  cursor: pointer;
+  color: var(--black) !important;
+}
+
+.custom-head.active {
+  color: var(--black) !important;
+}
+
+/* custom header bg */
+.customhdbg {
+  background-color: var(--accent-default);
+  border-radius: 10px 10px 0px 0px;
+} 
+
+.customfileinputPROA {
+  border-radius: 10px !important;
+}
+
+.customfileinputPROA:focus ~ .customfilelabelPROA {
+  border-color: var(--accent-default) !important;
+  box-shadow: none !important;
+}
+
+.customfilelabelPROA {
+  height: 46px !important;
+  border-radius: 10px !important;
+}
+
+.customfilelabelPROA:after {
+  height: 44px !important;
+  content: none !important;
+  border-radius: 0 10px 10px 0 !important;
 }
