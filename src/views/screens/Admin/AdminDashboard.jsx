@@ -299,7 +299,7 @@ class AdminDashboard extends React.Component {
     if (!this.state.toggleOpen.produk) {
       return (
         <>
-          <table className="dashboard-table ml">
+          <table className="dashboard-table">
             <thead>
               <tr>
                 <th>ID</th>
@@ -668,8 +668,8 @@ class AdminDashboard extends React.Component {
                   <h2>Tambah Produk</h2>
                 </caption>
               </div>
-                {this.renderHeadProductList()}
-                {this.renderAddProduct()}
+              {this.renderHeadProductList()}
+              {this.renderAddProduct()}
             </div>
            {/* bottom of the page */}
           </div>

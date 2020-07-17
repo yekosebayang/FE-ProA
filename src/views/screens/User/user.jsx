@@ -82,6 +82,14 @@ class UserC extends React.Component {
     this.toggleEdit("profile")
   }
 
+  verifBtnHandler = () => {
+    const { id, username, useremail} = this.props.user
+    let user = {
+      id, username, useremail
+    }
+    this.props.verifEmail(user)
+  }
+
   renderProfile() {
     return(
       <div className="profile-box">
@@ -154,7 +162,10 @@ class UserC extends React.Component {
                <h4>Ubah Data</h4>
               </div>
            </div>
-           <div>
+           {this.props.user.verified == "belum" ? (
+               this.renderModalBelumVerif()
+           ) : (
+             <div>
               <TextField
                 value={this.state.profileForm.userrealname}
                 onChange={(e) => this.inputHandler(e, "userrealname", "profileForm")} 
@@ -174,6 +185,7 @@ class UserC extends React.Component {
               <ButtonUI className="" type="contained" onClick={(e) => this.toggleEdit("profile")}>Batal</ButtonUI>
             </div>
             </div>
+            )}
             <div className="row mt-2">
              <div className="col-auto mr-auto ml-3"></div>
            </div>
@@ -183,9 +195,9 @@ class UserC extends React.Component {
   }
 
   renderModalPassword(){
-      return(
-        <Modal
-          toggle={(e) => this.toggleEdit("password")} // pemanggil tutup buka
+    return(
+      <Modal
+      toggle={(e) => this.toggleEdit("password")} // pemanggil tutup buka
           isOpen={this.state.editToggle.password} // si trigger buka
         >
           <ModalHeader className="modal-login-header" toggle={(e) => this.toggleEdit("password")}></ModalHeader>
@@ -195,7 +207,10 @@ class UserC extends React.Component {
                <h4>Ubah Kata Sandi</h4>
               </div>
            </div>
-           <div>
+             {this.props.user.verified == "belum" ? (
+               this.renderModalBelumVerif()
+             ) : (
+            <div>
               <TextField
                 onChange={(e) => this.inputHandler(e, "password", "passwordForm")} 
                 placeholder="Kata Sandi"
@@ -221,9 +236,25 @@ class UserC extends React.Component {
                 <ButtonUI className="col-3" type="contained" onClick={(e) => this.toggleEdit("password")}>Batal</ButtonUI>
               </div>
             </div>
+             )}
           </ModalBody>
         </Modal>
       )
+  }
+
+  renderModalBelumVerif() {
+    return(
+      <div className="container">
+        {/* <div className="row"> */}
+          <p className="col">Email yang anda daftarkan belum verifikasi, kirim email verifikasi?</p>
+          <ButtonUI
+          type="outlined" 
+          style={{ width: "auto"}}
+          onClick={(e) => {this.verifBtnHandler()}}
+          >Kirim</ButtonUI>
+        {/* </div> */}
+      </div>
+    )
   }
 
   render(){
@@ -241,22 +272,6 @@ class UserC extends React.Component {
               <h5 className="card-title">PROFILE</h5>
               </ButtonUI>
             </div>
-            {/* <Link to="/" style={{ color: "inherit", textDecoration: "inherit"}} > */}
-            <ul className="list-group listNav-group-flush">
-              <li onClick={() => this.setState({ categoryFilter: "Minuman" })}className="list-group-item ">
-              <ButtonUI type="textual">Minuman</ButtonUI>
-              </li>
-              <li onClick={() => this.setState({ categoryFilter: "Makanan" })} className="list-group-item ">
-              <ButtonUI type="textual">Makanan</ButtonUI>
-              </li>
-              <li onClick={() => this.setState({ categoryFilter: "Tambahan" })} className="list-group-item ">
-              <ButtonUI type="textual">Tambahan</ButtonUI>
-              </li>
-              <li onClick={() => this.setState({ categoryFilter: "Kudapan" })} className="list-group-item ">
-              <ButtonUI type="textual">Kudapan</ButtonUI>
-              </li>
-            </ul>
-            {/* </Link> */}
           </div>
         </div>
         <div className="col mt-2">

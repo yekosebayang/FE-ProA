@@ -52,7 +52,7 @@ class App extends React.Component {
       return (
         <>
           <Route exact path="/user" component={User}/>
-          <Route exact path="/cart" component={Cart} />
+          <Route exact path="/user-cart" component={Cart} />
           <Route exact path="/history" component={History} />
         </>
       );
@@ -97,7 +97,7 @@ class App extends React.Component {
       <>
         {
         window.location.pathname === "/" || window.location.pathname === "/product/:productId" ||
-        window.location.pathname === "/cart" || window.location.pathname === "/history" ||
+        window.location.pathname === "/user-cart" || window.location.pathname === "/history" ||
         window.location.pathname === "/admin-dashboard" || window.location.pathname === "/admin-payment" ||
          window.location.pathname === "/admin-payment" ||
         window.location.pathname ==="/user"

@@ -4,7 +4,7 @@ import "./Cart.css";
 
 import { Table, Alert } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import { faTimesCircle, faTrashAlt, faMinusSquare, faMinusCircle } from "@fortawesome/free-solid-svg-icons";
 
 import Axios from "axios";
 import { API_URL } from "../../../constants/API";
@@ -12,23 +12,63 @@ import ButtonUI from "../../components/Button/Button";
 import { Link } from "react-router-dom";
 import { priceFormatter } from "../../../supports/helpers/formatter";
 import { fillCart } from "../../../redux/actions";
+import TextField from "../../components/TextField/TextField";
+import swal from "sweetalert";
+
+const Kecamatan = [
+  {
+    nama: "Solitude",
+    jarak: 10
+  },
+  {
+    nama: "Dunstad",
+    jarak: 9
+  },
+  {
+    nama: "Markarth",
+    jarak: 8
+  },
+  {
+    nama: "Dawnstar",
+    jarak: 7
+  },
+  {
+    nama: "winterhold",
+    jarak: 6
+  },
+  {
+    nama: "Windhelm",
+    jarak: 5
+  },
+  {
+    nama: "Whiterun",
+    jarak: 4
+  },
+  {
+    nama: "Eastmarch",
+    jarak: 3
+  },
+  {
+    nama: "Falkreath",
+    jarak: 2
+  },
+  {
+    nama: "Riften",
+    jarak: 1
+  }
+]
 
 class Cart extends React.Component {
   state = {
     cartData: [],
     checkoutItems: [],
-    shipping: "instant",
+    shipping: 10,
   };
 
   getCartData = () => {
-    Axios.get(`${API_URL}/carts`, {
-      params: {
-        userId: this.props.user.id,
-        _expand: "product",
-      },
-    })
+    Axios.get(`${API_URL}/carts/user/${this.props.user.id}`)
       .then((res) => {
-        console.log(res.data);
+        console.log(res.data[0]);
         this.setState({ cartData: res.data });
       })
       .catch((err) => {
@@ -50,131 +90,44 @@ class Cart extends React.Component {
     }
   };
 
-  renderCartData = () => {
-    return this.state.cartData.map((val, idx) => {
-      const { quantity, product, id } = val;
-      const { productName, image, price, category } = product;
-      return (
-        <tr
-          style={{
-            height: "150px",
-          }}
-        >
-          <td className="text-left">
-            <div className="d-flex align-items-center">
-              <img
-                className="mr-4"
-                src={image}
-                alt=""
-                style={{
-                  width: "100px",
-                  height: "100px",
-                  objectFit: "contain",
-                }}
-              />
-              <div>
-                <strong>{productName}</strong>
-                <p>{category}</p>
-              </div>
-            </div>
-          </td>
-          <td style={{ verticalAlign: "middle" }}>
-            <strong>
-              {new Intl.NumberFormat("id-ID", {
-                style: "currency",
-                currency: "IDR",
-              }).format(price)}
-            </strong>
-          </td>
-          <td style={{ verticalAlign: "middle" }}>
-            <strong>{quantity}</strong>
-          </td>
-          <td>
-            <strong>
-              {new Intl.NumberFormat("id-ID", {
-                style: "currency",
-                currency: "IDR",
-              }).format(price * quantity)}
-            </strong>
-          </td>
-          <td>
-            <FontAwesomeIcon
-              onClick={() => this.deleteCartHandler(id)}
-              className="close-icon"
-              icon={faTimesCircle}
-              style={{ fontSize: "30px", color: "gray" }}
-            />
-          </td>
-        </tr>
-      );
-    });
-  };
-
   deleteCartHandler = (id) => {
     Axios.delete(`${API_URL}/carts/${id}`)
       .then((res) => {
-        this.getCartData();
-        this.props.fillCart(this.props.user.id);
+        this.getCartData()
       })
       .catch((err) => {
+        console.log("gagal delete gan")
         console.log(err);
       });
   };
 
-  renderSubTotalPrice = () => {
-    let totalPrice = 0;
-
-    this.state.cartData.forEach((val) => {
-      const { quantity, product } = val;
-      const { price } = product;
-
-      totalPrice += quantity * price;
-    });
-
-    return totalPrice;
-  };
-
   renderShippingPrice = () => {
-    switch (this.state.shipping) {
-      case "instant":
-        return priceFormatter(100000);
-      case "sameDay":
-        return priceFormatter(50000);
-      case "express":
-        return priceFormatter(20000);
-      default:
-        return "Free";
-    }
-  };
-
-  renderTotalPrice = () => {
-    let totalPrice = 0;
-
-    this.state.cartData.forEach((val) => {
-      const { quantity, product } = val;
-      const { price } = product;
-
-      totalPrice += quantity * price;
-    });
-
-    let shippingPrice = 0;
-
-    switch (this.state.shipping) {
-      case "instant":
-        shippingPrice = 100000;
-        break;
-      case "sameDay":
-        shippingPrice = 50000;
-        break;
-      case "express":
-        shippingPrice = 20000;
-        break;
-      default:
-        shippingPrice = 0;
-        break;
-    }
-
-    return totalPrice + shippingPrice;
+    const { shipping } = this.state
+    if (this.state.shipping >= 9){
+        return priceFormatter(40000);
+    } else if (shipping <= 8 && shipping >=7){
+        return priceFormatter(32000);
+    } else if (shipping <= 6 && shipping >= 5){
+        return priceFormatter(24000);
+    } else if (shipping <= 4 && shipping >= 3){
+        return priceFormatter(16000);
+    } else if (shipping <= 2 && shipping >= 1){
+        return priceFormatter(8000);
+    } 
+    // switch (this.state.shipping >= 9) {
+    //   case 10,9:
+    //     return priceFormatter(40000);
+    //   case 8,7:
+    //     return priceFormatter(32000);
+    //   case 6,5:
+    //     return priceFormatter(24000);
+    //   case 4,3:
+    //     return priceFormatter(16000);
+    //   case 2,1:
+    //     return priceFormatter(8000);
+    //   default:
+    //     return 8000;
+    // }
   };
 
   checkoutHandler = () => {
@@ -223,70 +176,208 @@ class Cart extends React.Component {
     this.getCartData();
   }
 
-  render() {
-    if (this.state.cartData.length) {
+  renderTotalPrice = () => {
+    let totalPrice = 0;
+
+    this.state.cartData.forEach((val) => {
+      const { quantity, product } = val;
+      const { productprice } = product;
+
+      totalPrice += quantity * productprice;
+    });
+
+    let shippingPrice = 0;
+
+    switch (this.state.shipping) {
+      case "instant":
+        shippingPrice = 100000;
+        break;
+      case "sameDay":
+        shippingPrice = 50000;
+        break;
+      case "express":
+        shippingPrice = 20000;
+        break;
+      default:
+        shippingPrice = 0;
+        break;
+    }
+
+    return totalPrice + shippingPrice;
+  };
+
+  renderSubTotalPrice = () => {
+    let totalPrice = 0;
+
+    this.state.cartData.forEach((val) => {
+      const { quantity, product } = val;
+      const { productprice } = product;
+
+      totalPrice += quantity * productprice;
+    });
+
+    return totalPrice;
+  };
+  
+  renderHeadProductList = () => {
+    return(
+      <>
+        <table className="dashboardCart-table">
+          <thead>
+            <tr>
+              <th>Produk</th>
+              <th>Harga</th>
+              <th>Jumlah</th>
+              <th>Total harga</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>{this.renderCartData()}</tbody>
+        </table>
+      </>
+    )
+  }
+
+  renderCartData = () => {
+    console.log(this.state.cartData)
+    return this.state.cartData.map((val, idx) => {
+      const { quantity, product, cartId } = val;
+      const { productname, productimage, productprice } = product;
       return (
-        <div className="container-fluid">
-          <div className="row">
-            <div className="col-1"></div>
-            <div className="col py-2 px-1">
-              <table className="cart-table">
-                <thead>
-                  <tr>
-                    <th className="text-left">Product</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Total Price</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>{this.renderCartData()}</tbody>
-              </table>
-            </div>
-            <div className="col-3 py-2 px-1">
-              <div className="cart-card">
-                <div className="cart-card-head p-4">Order Summary</div>
-                <div className="cart-card-body p-4">
-                  <div className="d-flex justify-content-between my-2">
-                    <div>Subtotal</div>
-                    <strong>
-                      {}
-                    </strong>
-                  </div>
-                  <div className="d-flex justify-content-between my-2">
-                    <div>Shipping</div>
-                    <strong>{this.renderShippingPrice()}</strong>
-                  </div>
-                  <div className="d-flex justify-content-between my-2 align-items-center">
-                    <label>Shipping Method</label>
-                    <select
-                      onChange={(e) =>
-                        this.setState({ shipping: e.target.value })
-                      }
-                      className="form-control w-50"
-                    >
-                      <option value="instant">Instant</option>
-                      <option value="sameDay">Same Day</option>
-                      <option value="express">Express</option>
-                      <option value="economy">Economy</option>
-                    </select>
-                  </div>
+        <tr>
+          <td>
+            <div className="container">
+                <div>
+                  <strong>{productname}</strong>
                 </div>
-                <div className="cart-card-foot p-4">
-                  <div className="d-flex justify-content-between my-2">
-                    <div>Total</div>
-                    <div>{priceFormatter(this.renderTotalPrice())}</div>
-                  </div>
-              <input
-                onClick={this.checkoutHandler}
-                type="button"
-                value="Checkout"
-                className="btn btn-success btn-block mt-3"
-              />
+                <img className="mr-4"
+                  src={productimage}
+                  alt=""
+                  style={{ width: "100px", height: "100px", objectFit: "contain"}}/>
+            </div>
+          </td>
+          <td style={{ verticalAlign: "middle" }}>
+            <strong>
+              {new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+              }).format(productprice)}
+            </strong>
+          </td>
+          <td style={{ verticalAlign: "middle" }}>
+            <strong>{quantity}</strong>
+          </td>
+          <td>
+            <strong>
+              {new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+              }).format(productprice * quantity)}
+            </strong>
+          </td>
+          <td>
+            <FontAwesomeIcon
+              onClick={() => this.deleteCartHandler(cartId)}
+              className="delete-icon"
+              icon={faMinusSquare}
+              style={{ fontSize: "40px"}}
+            />
+          </td>
+        </tr>
+      );
+    });
+  };
+
+  renderKecamatan = () => {
+    return Kecamatan.map(({ nama, jarak }) => {
+      return(
+        <option value={jarak}>{nama}</option>
+      )
+    })
+  }
+
+  renderNavCard = () => {
+    return(
+      <div>
+        <div>
+          <div className="card-header cardNav-header mt-2">
+            <h5 className="card-title">Harga</h5>
+          </div>
+          <div className=" textPreviewCart">
+            <h5 className="mb-3">Alamat Kirim</h5>
+            <TextField className="mb-1" placeholder="Alamat"></TextField>
+            <div className="mb-1 container">
+              <div className="row">
+                <TextField className="col mr-1" placeholder="RT"></TextField>
+                <TextField className="col ml-1" placeholder="RW"></TextField>
+              </div>
+            </div>
+            <TextField className="mb-2" placeholder="Kelurahan"></TextField>
+            <div className="container mb-1">
+              <div className="row">
+                <strong className="col mt-2">Kecamatan</strong>
+                <div>
+                <select onChange={(e) => this.setState({ shipping: e.target.value })}
+                className="form-control col">
+                  {this.renderKecamatan()}
+                </select>
                 </div>
               </div>
             </div>
-            <div className="col-1 bg"></div>
+            <div className="container">
+            <div className="row">
+              <strong className="col">Biaya Kirim: </strong>
+              <span>
+                {this.renderShippingPrice()}
+              </span>
+            </div>
+          </div>
+          </div>
+          <div className=" textPreviewCart">
+            <h5 className="mb-3">Total bayar</h5>
+            <div className="container">
+                <div className="row">
+                  <strong className="col">Harga: </strong>
+                  <strong>{priceFormatter(this.renderSubTotalPrice())}</strong>
+                </div>
+            </div>
+            <div className="container">
+              <div className="row">
+                <strong className="col">Biaya Kirim:</strong>
+                <strong>{this.renderShippingPrice()}</strong>
+              </div>
+            </div>
+            <div className="row mt-3">
+              <h5 className="col">TOTAL</h5>  
+              <h5 className="col-auto">{priceFormatter(this.renderTotalPrice())}</h5>
+            </div>
+            <ButtonUI className="mt-3 login-modal-btn" type="outlined">
+              Bayar
+            </ButtonUI>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  render() {
+    if (this.state.cartData.length) {
+      return (
+        <div className="container py-1">
+          <div className="row">
+            <div className="col-3 py-2 px-1 container">
+              {this.renderNavCard()}
+            </div>
+            <div className="col py-2">
+              <div className="dashboardCart">
+                <div className="customhdbg">
+                <caption ClassName="py-2 pl-2" style={{color: "black"}}>
+                  <h2>Keranjang</h2>
+                </caption>
+                </div>
+                {this.renderHeadProductList()}
+              </div>
+            </div>
           </div>
         </div>
       );

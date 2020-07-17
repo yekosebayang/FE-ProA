@@ -20,7 +20,7 @@ import "./Navbar.css";
 import TextField from "../TextField/TextField";
 import ButtonUI from "../Button/Button";
 import { logoutHandler, navbarInputHandler,loginHandler, resetErrmsg, verifEmail, signBtnHandler } from "../../../redux/actions";
-import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import { faSignOutAlt, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const CircleBg = ({ children }) => {
@@ -249,26 +249,36 @@ class Navbar extends React.Component {
                 type="contained"
               >X
               </ButtonUI>
-            {/* <CircleBg>
-              <small style={{ color: "#3C64B1", fontWeight: "bold" }}>1</small>
-            </CircleBg> */}
             </DropdownToggle>
             <DropdownMenu right className="mt-3">
               <DropdownItem header>
               <div className="d-flex">
-                <h4 style={{textAlign:"center"}}>{this.props.user.username}</h4>
+                <h4 classname="mr-1" style={{textAlign:"center"}}>{this.props.user.username}</h4>
               </div>
               </DropdownItem>
               <DropdownItem disabled>
-                <p>{this.props.user.userrealname}</p>
+                  <p>{this.props.user.userrealname ? (
+                    this.props.user.userrealname
+                  ):(
+                    "kosong"
+                  )}</p>
+              </DropdownItem>
+              <DropdownItem>
+              <div className="d-flex">
+                  <h5 className="mr-3">ubah data</h5>
+                  <Link className="" to="/user"><FontAwesomeIcon icon={faEdit} style={{ fontSize: 20 }} /> </Link>
+                </div>
               </DropdownItem>
               <DropdownItem divider/>
-              <DropdownItem 
-                onClick={this.logoutBtnHandler}
-              >
+              <DropdownItem >
                 <div className="d-flex">
-                  <h5 className="mr-1">keluar</h5>
-                  <FontAwesomeIcon icon={faSignOutAlt} style={{ fontSize: 24 }} /> 
+                  <h5 className="mr-5">keluar</h5>
+                  <ButtonUI
+                  type="textual" 
+                  onClick={this.logoutBtnHandler}
+                  >
+                    <FontAwesomeIcon icon={faSignOutAlt} style={{ fontSize: 24 }} /> 
+                  </ButtonUI>
                 </div>
               </DropdownItem>
             </DropdownMenu>
@@ -344,10 +354,15 @@ class Navbar extends React.Component {
       } else {
         return(
           <>
-          <ButtonUI 
+          <Link to="/user-cart"
+              style={{ textDecoration: "none", color: "inherit" }}
               type="textual"
               className="my-3 mx-2"
-            >Keranjang</ButtonUI>
+            >
+              <ButtonUI type="textual">
+                Keranjang
+              </ButtonUI>
+            </Link>
             <ButtonUI 
               type="textual"
               className="my-3 mx-2"
