@@ -14,12 +14,14 @@ import {
   ModalBody,
 } from "reactstrap";
 
-import { faUser } from "@fortawesome/free-regular-svg-icons";
+import { faUser, faSignOut, fa } from "@fortawesome/free-regular-svg-icons";
 
 import "./Navbar.css";
 import TextField from "../TextField/TextField";
 import ButtonUI from "../Button/Button";
 import { logoutHandler, navbarInputHandler,loginHandler, resetErrmsg, verifEmail, signBtnHandler } from "../../../redux/actions";
+import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const CircleBg = ({ children }) => {
   return <div className="circle-bg">{children}</div>;
@@ -253,14 +255,21 @@ class Navbar extends React.Component {
             </DropdownToggle>
             <DropdownMenu right className="mt-3">
               <DropdownItem header>
-                <strong>{this.props.user.username}</strong>
+              <div className="d-flex">
+                <h4 style={{textAlign:"center"}}>{this.props.user.username}</h4>
+              </div>
               </DropdownItem>
               <DropdownItem disabled>
                 <p>{this.props.user.userrealname}</p>
               </DropdownItem>
               <DropdownItem divider/>
-              <DropdownItem>
-                <p>content</p>
+              <DropdownItem 
+                onClick={this.logoutBtnHandler}
+              >
+                <div className="d-flex">
+                  <h5 className="mr-1">keluar</h5>
+                  <FontAwesomeIcon icon={faSignOutAlt} style={{ fontSize: 24 }} /> 
+                </div>
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
