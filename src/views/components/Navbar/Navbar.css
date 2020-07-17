@@ -23,7 +23,7 @@
   padding: 10px 20px 10px 10px;
   border: none;
   font-size: 16px;
-  width: 100%;
+  width: 30%;
   outline: none;
   border-bottom: 1px solid white;
   transition: all ease 150ms;
@@ -32,6 +32,12 @@
 
 .search-bar.active {
   border-bottom: 1px solid var(--accent-default);
+  width: 100%;
+}
+
+.search-bar.active2 {
+  border-bottom: 1px solid var(--accent-default);
+  width: 70%;
 }
 
 .login-modal-btn {
@@ -88,10 +94,10 @@
   background: linear-gradient(
     90deg,
     /* #e60000, */
-    #ff8080,
-    #ff9999,
-    #ffcccc,
-    #ffe6e6,
+    #b3b3b3,
+    #baabab,
+    #b6afaf,
+    #bea7a7,
     #ffffff
   );
   border-radius: 10px 0px 10px 10px;

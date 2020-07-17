@@ -37,11 +37,12 @@ class AdminDashboard extends React.Component {
     nameFilter: "",
     categoryFilter: "",
     pricefilter:{
-      max: 999999,
+      max: 9999999999999,
       min: 0,
     },
     selectedFile: null,
     categoryId: 1,
+    max: 999999999,
   };
 
   componentDidMount() {
@@ -120,12 +121,10 @@ class AdminDashboard extends React.Component {
         .then((res) => {
           this.getProduct()
           swal("Berhasil!", "Produk "+ productData.productname+ " berhasil ditambah", "success")
-          this.toggleEdit("editProduct")
         })
         .catch((err) => {
           this.getProduct()
           swal("Perhatian!", "Produk "+ productData.productname+ " berhasil ditambah, foto tidak didaftarkan", "warning")
-          this.toggleEdit("editProduct")
         })
       })
       .catch((err) => {
@@ -254,7 +253,7 @@ class AdminDashboard extends React.Component {
         <div>
               <div className="card-header cardNav-header mt-2">
               <ButtonUI 
-                type="textual"onClick={() => this.setState({ priceFilter: {...this.state.pricefilter, min: 0, max:9999999999} })}
+                type="textual"onClick={(_) => this.setState({ priceFilter: {...this.state.pricefilter, max: this.state.max} })}
                 style={{ color: "inherit", textDecoration: "inherit"}}  
                 >
                 <h5 className="card-title">Harga</h5>
@@ -265,13 +264,14 @@ class AdminDashboard extends React.Component {
                 onChange={(e) => this.inputHandler(e, "min", "pricefilter")}
                 className="pricefiltermin"
                 placeholder="Harga Min"
+                // placeholder={this.state.pricefilter.min}
                 >test</TextField>
                 <TextField 
                 onChange={(e) => this.inputHandler(e, "max", "pricefilter")}
                 className="pricefiltermax"
+                // placeholder={this.state.pricefilter.max}
                 placeholder="Harga Maks"
                 >test</TextField>
-                
               </div>
         </div>
         <div>
@@ -694,4 +694,3 @@ const mapDispatchToProps = {
 };
 
 export default connect(mapStateToProps,mapDispatchToProps)(AdminDashboard);
-// export default AdminDashboard;

@@ -36,10 +36,10 @@ class App extends React.Component {
   }
 
   renderAdminRoutes = () => {
-    if (this.props.user.role === "admin") {
+    if (this.props.user.userrole === "admin") {
       return (
         <>
-          {/* <Route exact path="/admin-dashboard" component={AdminDashboard} /> */}
+          <Route exact path="/admin-dashboard" component={AdminDashboard} />
           <Route exact path="/admin-payments" component={Payments} />
           <Route exact path="/admin-report" component={Report} />
         </>
@@ -98,7 +98,7 @@ class App extends React.Component {
         {
         window.location.pathname === "/" || window.location.pathname === "/product/:productId" ||
         window.location.pathname === "/cart" || window.location.pathname === "/history" ||
-        // window.location.pathname === "/admin-dashboard" || window.location.pathname === "/admin-payment" ||
+        window.location.pathname === "/admin-dashboard" || window.location.pathname === "/admin-payment" ||
          window.location.pathname === "/admin-payment" ||
         window.location.pathname ==="/user"
         ? (

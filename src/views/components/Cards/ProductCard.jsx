@@ -11,24 +11,24 @@ import { faHeart, faStar, faPlusSquare } from "@fortawesome/free-regular-svg-ico
 class ProductCard extends React.Component {
 
   render() {
-    const {desc, productName, price, image } = this.props.data;
+    const {productdesc, productname, productprice, productimage } = this.props.data;
 
     return (
       <div className={`product-card d-inline-block ${this.props.className}`}>
         <img
-          src={image}
-          alt={productName}
+          src={productimage}
+          alt={productname}
           style={{ width: "auto", height: "auto", objectFit: "contain" }}
         />
         <div>
-          <p className="mt-3">{productName}</p>
+          <p className="mt-3">{productname}</p>
           <h5 style={{ fontWeight: "bolder" }}>
             {new Intl.NumberFormat("id-ID", {
               style: "currency",
               currency: "IDR",
-            }).format(price)}
+            }).format(productprice)}
           </h5>
-          <p className="small">{desc}</p>
+          <p className="small">{productdesc}</p>
         </div>
         <div className="d-flex flex-row align-items-center justify-content-between mt-2">
           <div>
@@ -55,14 +55,5 @@ class ProductCard extends React.Component {
     );
   }
 }
-// const mapStateToProps = (state) => {
-//   return {
-//     user: state.user,
-//   };
-// };
-
-// const mapDispatchToProps = {
-//   onFillCart: fillCart
-// }
 
 export default (ProductCard);

@@ -3,13 +3,12 @@ import { Redirect, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import Cookies from "universal-cookie";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faShoppingCart } from "@fortawesome/free-solid-svg-icons/";
 import {
   Dropdown,
   DropdownItem,
   DropdownToggle,
   DropdownMenu,
+  DropdownDivider,
   Modal,
   ModalHeader,
   ModalBody,
@@ -127,16 +126,12 @@ class Navbar extends React.Component {
               </div>
            </div>
            <div>
-              {/* <p className="ml-3">Username</p> */}
               <TextField
-                // value={this.state.loginForm.username}
                 onChange={(e) => this.inputHandler(e, "username")} 
                 placeholder="Alamat e-mail"
                 className="mb-1 login-modal-text"
                 />
-              {/* <p className="ml-3 mt-">Password</p> */}
               <TextField
-                // value={this.state.loginForm.password}
                 onChange={(e) => this.inputHandler(e, "password")} 
                 placeholder="Kata Sandi"
                 className="login-modal-text mt-3"
@@ -240,67 +235,35 @@ class Navbar extends React.Component {
        return(
         <div className="container">         
           <div className="row">
-          <Dropdown className="col-3"
+          <div className="col-4"></div>
+          <Dropdown className="col"
             toggle={this.toggleDropdown}
             isOpen={this.state.dropdownOpen}
           >
             {this.props.user.id ? (this.toggleDropdown) : null}
-            <DropdownToggle className="d-flex" tag="div" >
-              <FontAwesomeIcon icon={faUser} style={{ fontSize: 24 }} />
-              <p className="small ml-2 mr-4">{this.props.user.username}</p>
+            <DropdownToggle className="" tag="div" >
+              <ButtonUI 
+                // onClick={this.logoutBtnHandler}
+                type="contained"
+              >X
+              </ButtonUI>
+            {/* <CircleBg>
+              <small style={{ color: "#3C64B1", fontWeight: "bold" }}>1</small>
+            </CircleBg> */}
             </DropdownToggle>
-            <DropdownMenu className="mt-2">
-              {this.props.user.role == "admin" ? (
-                <>
-                  <DropdownItem>
-                    <Link
-                      style={{ color: "inherit", textDecoration: "none" }}
-                      to="/admin-dashboard"
-                    >
-                      Dashboard
-                    </Link>
-                  </DropdownItem>
-                  <DropdownItem>Members</DropdownItem>
-                  <DropdownItem>
-                    <Link
-                      style={{ color: "inherit", textDecoration: "none" }}
-                      to="/admin-payments"
-                    >
-                      Payments
-                    </Link>
-                  </DropdownItem>
-                </>
-              ) : (
-                <>
-                  <DropdownItem>Wishlist</DropdownItem>
-                  <DropdownItem>
-                    <Link to="/history">History</Link>
-                  </DropdownItem>
-                </>
-              )}
+            <DropdownMenu right className="mt-3">
+              <DropdownItem header>
+                <strong>{this.props.user.username}</strong>
+              </DropdownItem>
+              <DropdownItem disabled>
+                <p>{this.props.user.userrealname}</p>
+              </DropdownItem>
+              <DropdownItem divider/>
+              <DropdownItem>
+                <p>content</p>
+              </DropdownItem>
             </DropdownMenu>
           </Dropdown>
-          <Link className="col-2 d-flex" //cart
-            to="/cart"
-            style={{ textDecoration: "none", color: "inherit" }}
-          >
-            <FontAwesomeIcon
-              className="mr-2"
-              icon={faShoppingCart}
-              style={{ fontSize: 24 }}
-            />
-            <CircleBg>
-              <small style={{ color: "#3C64B1", fontWeight: "bold" }}>
-                {this.props.user.cartItems}
-              </small>
-            </CircleBg>
-          </Link>
-          <ButtonUI className="col ml-0 mt-1" //log aut
-            onClick={this.logoutBtnHandler}
-            type="textual"
-          >
-            Logout
-          </ButtonUI>
           </div>
         </div>
        )
@@ -309,6 +272,7 @@ class Navbar extends React.Component {
         <div className="container">
           <div className="row">
             <div className=" mr-3"></div>
+            {/* bungkus di tombol login */}
             <Link className="col-3 mr-3"
               style={{ textDecoration: "none", color: "inherit" }}>
               <ButtonUI type="outlined" 
@@ -323,6 +287,7 @@ class Navbar extends React.Component {
             <ButtonUI type="contained" // regis
             >Daftar</ButtonUI>
             </Link>
+          {/* bungkus di tombol login */}
           </div>
         </div>
       )
@@ -332,22 +297,56 @@ class Navbar extends React.Component {
   renderVerifAlert(){
     if (this.props.user.id && this.props.user.verified == "belum") {
       return(
-        <div className="container-fluid row sticky-top">
-          <div className="col-1"></div>
-          <div className="col cardVerif">
-            <p className="textVerif">Verifikasi akun kamu untuk kenyamanan berbelanja, dan keamanan{" "}
-            <Link onClick={(e) => this.toggleModal("verif")}
-            style={{ color: "#995900" }}
-            >
-              Verifikasi
-            </Link>
-            </p>
-            {/* <p>{this.props.user.verified}</p> */}
+        <div className="container">
+          <div className="row">
+            <div className="col-8 cardVerif">
+              <p className="textVerif">Verifikasi akun kamu untuk kenyamanan berbelanja, dan keamanan{" "}
+              <Link onClick={(e) => this.toggleModal("verif")}
+              style={{ color: "#995900" }}
+              >
+                Verifikasi
+              </Link>
+              </p>
+              {/* <p>{this.props.user.verified}</p> */}
+            </div>
+            <div className="col-1"></div>
+            {this.renderModalVerif()}
           </div>
-          <div className="col-1"></div>
-          {this.renderModalVerif()}
         </div>
       )
+    }
+  }
+
+  renderBarOption(){
+    if (this.props.user.id){
+      if (this.props.user.userrole == "admin"){
+        return(
+          <>
+          <ButtonUI 
+              type="textual"
+              className="my-3 mx-2"
+            >Dashboard</ButtonUI>
+            <ButtonUI 
+              type="textual"
+              className="my-3 mx-2"
+            >Transaksi</ButtonUI>
+          </>
+        )
+      } else {
+        return(
+          <>
+          <ButtonUI 
+              type="textual"
+              className="my-3 mx-2"
+            >Keranjang</ButtonUI>
+            <ButtonUI 
+              type="textual"
+              className="my-3 mx-2"
+            >Pembayaran</ButtonUI>
+          </>
+        )
+      }
+
     }
   }
 
@@ -363,16 +362,34 @@ class Navbar extends React.Component {
           </Link>
         </div>
         <div className="col pl-2 pt-1">
-          <input
-            onChange={this.props.onChangeSearch}
-            onFocus={this.onFocus}
-            onBlur={this.onBlur}
-            className={`search-bar ${
-              this.state.searchBarIsFocused ? "active" : null
-            }`}
-            type="text"
-            placeholder="mau makan apa?"
-          />
+          <div className="container">
+            <div className="row">
+              {this.props.user.id ? (
+                <input
+                  onChange={this.props.onChangeSearch}
+                  onFocus={this.onFocus}
+                  onBlur={this.onBlur}
+                  className={`search-bar ${
+                    this.state.searchBarIsFocused ? "active2" : null
+                  }`}
+                  type="text"
+                  placeholder="mau makan apa?"
+                />
+              ) : (
+                <input
+                  onChange={this.props.onChangeSearch}
+                  onFocus={this.onFocus}
+                  onBlur={this.onBlur}
+                  className={`search-bar ${
+                    this.state.searchBarIsFocused ? "active" : null
+                  }`}
+                  type="text"
+                  placeholder="mau makan apa?"
+                />
+              )}
+              {this.renderBarOption()}
+            </div>
+          </div>
         </div>
         <div className="col-3 pt-1 row align-items-center">
           {this.renderMenuNav()}

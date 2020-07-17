@@ -26,7 +26,7 @@ class BaseC extends React.Component {
   }
 
   renderCarouselItems = () => {
-    return this.state.ItemforSaleData.map(({ image, productName, desc, id }) => {
+    return this.state.ItemforSaleData.map(({ productimage, productname, productdesc, id }) => {
       return (
         <CarouselItem
           onExiting={() => this.setState({ animating: true })}
@@ -39,12 +39,12 @@ class BaseC extends React.Component {
                 <div className="col-1"></div>
                 <div className="col-5 text-white ">
                   <div>
-                  <h2>{productName}</h2>
-                  <p className="mt-4">{desc}</p>
+                  <h2>{productname}</h2>
+                  <p className="mt-4">{productdesc}</p>
                   </div>
                 </div>
                 <div className="col-6">
-                  <img src={image} alt="" style={{ height: "250px"}} />
+                  <img src={productimage} alt="" style={{ height: "250px"}} />
                 </div>
               </div>
             </div>
@@ -73,66 +73,41 @@ class BaseC extends React.Component {
   };
 
   getItemforSaleData = () => {
-    Axios.get(`${API_URL}/products`)
+    Axios.get(`${API_URL}/products/all`)
       .then((res) => {
         this.setState({ ItemforSaleData: res.data });
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err.response.data.message);
       });
   };
 
   addToCartHandler = (produkId) => {
-    Axios.get(`${API_URL}/carts`, {
-      params: {
-        userId: this.props.user.id,
-        productId: produkId,
-      },
-    }).then((res) => {
-      if (res.data.length) {
-        Axios.put(`${API_URL}/carts/${res.data[0].id}`, {
-          userId: this.props.user.id,
-          productId: produkId,
-          quantity: res.data[0].quantity + 1,
-        })
-          .then((res) => {
-            swal(
-              "Masuk Keranjang",
-              "pesanan-mu minta di bayarr",
-              "berhasil"
-            );
-            this.props.onFillCart(produkId);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      } else {
-        Axios.post(`${API_URL}/carts`, {
-          userId: this.props.user.id,
-          productId: produkId,
-          quantity: 1,
-        })
-          .then((res) => {
-            swal(
-              "Add to cart",
-              "Your item has been added to your cart",
-              "success"
-            );
-            this.props.onFillCart(produkId);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-    });
-  };
+    Axios.get(`${API_URL}/carts/get/${this.props.user.id}/${produkId}`)
+    .then((res) => {
+      // console.log(res.data[0].cartId)
+      Axios.put(`${API_URL}/carts/${res.data[0].cartId}/qty/${+1}`)
+      .then((res) =>{console.log(res)})
+      .catch((err) =>{console.log(err)
+        console.log("error add old")
+      })
+    })
+    .catch((err) => {
+      Axios.post(`${API_URL}/carts/addnew/${this.props.user.id}/${produkId}`, {quantity: 1})
+      .then((res) => {
+        console.log(res)
+       })
+      .catch((err) => {
+        console.log("error add new")
+      })
+    })
+  }
 
   renderProducts = () => {
     return this.state.ItemforSaleData.map((val) => {
       if (
-        val.productName.toLowerCase().includes(this.props.search.searchValue.toLowerCase())
-        &&
-        val.category.toLowerCase().includes(this.state.categoryFilter.toLowerCase())
+        val.productname.toLowerCase().includes(this.props.search.searchValue.toLowerCase())
+        // && val.category.toLowerCase().includes(this.state.categoryFilter.toLowerCase())
       )
       {
         return (
@@ -148,27 +123,21 @@ class BaseC extends React.Component {
       }    
     });
   };
-
-  render(){
-    return(
-    <div className="container">
-      <div className="row">
-        {/* <div className="col-1"></div> */}
-        <div className="col-2 py-2 px-1">
-          <div className="card sticky-top cardNav">
-            <div className="card-header cardNav-header">
-              <ButtonUI 
-              type="textual"onClick={() => this.setState({ categoryFilter: "" })}
-              style={{ color: "inherit", textDecoration: "inherit"}}  
-              >
-              <h5 className="card-title">Menu</h5>
-              </ButtonUI>
-              
-            </div>
+  
+  renderNavCard = () => {
+    return (
+      <div className="card sticky-top cardNav">
+        <div className="card-header cardNav-header">
+          <ButtonUI 
+          type="textual"onClick={() => this.setState({ categoryFilter: "" })}
+          style={{ color: "inherit", textDecoration: "inherit"}}  
+          ><h5 className="card-title">Menu</h5>
+          </ButtonUI>
+           </div>
             {/* <Link to="/" style={{ color: "inherit", textDecoration: "inherit"}} > */}
             <ul className="list-group listNav-group-flush">
               <li onClick={() => this.setState({ categoryFilter: "Minuman" })}className="list-group-item ">
-              <ButtonUI type="textual">Minuman</ButtonUI>
+                <ButtonUI type="textual">Minuman</ButtonUI>
               </li>
               <li onClick={() => this.setState({ categoryFilter: "Makanan" })} className="list-group-item ">
               <ButtonUI type="textual">Makanan</ButtonUI>
@@ -182,6 +151,16 @@ class BaseC extends React.Component {
             </ul>
             {/* </Link> */}
           </div>
+        )
+  }
+
+  render(){
+    return(
+    <div className="container">
+      <div className="row">
+        {/* <div className="col-1"></div> */}
+        <div className="col-2 py-2 px-1 container">
+          {this.renderNavCard()}
         </div>
         <div className="col py-2 px-1" style={{width: "auto"}}>
           {/* <div className="col offset-3 mt-2" style={{width: "auto"}}> */}
