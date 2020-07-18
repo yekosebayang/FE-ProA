@@ -63,6 +63,13 @@ class Cart extends React.Component {
     cartData: [],
     checkoutItems: [],
     shipping: 10,
+    alamat: {
+      perum: "",
+      rt: "",
+      rw: "",
+      kelurahan: ""
+    },
+    // chkbox: true
   };
 
   getCartData = () => {
@@ -76,18 +83,30 @@ class Cart extends React.Component {
       });
   };
 
-  checkboxHandler = (e, idx) => {
+  inputHandler = (e, field, form) => {
+    let { value } = e.target;
+    this.setState({
+      [form]: {
+        ...this.state[form],
+        [field]: value,
+      },
+    });
+    console.log(field,form +": "+ this.state[form][field])
+  };
+
+  checkboxHandler = (e, id) => {
     const { checked } = e.target;
 
     if (checked) {
-      this.setState({ checkoutItems: [...this.state.checkoutItems, idx] });
+      this.setState({ checkoutItems: [...this.state.checkoutItems, id] });
     } else {
       this.setState({
         checkoutItems: [
-          ...this.state.checkoutItems.filter((val) => val !== idx),
+          ...this.state.checkoutItems.filter((val) => val !== id),
         ],
       });
     }
+    console.log(this.state.checkoutItems)
   };
 
   deleteCartHandler = (id) => {
@@ -130,45 +149,85 @@ class Cart extends React.Component {
     // }
   };
 
+  // checkoutHandler = () => {
+  //   const { perum, rt, rw, kelurahan} = this.state.alamat
+  //   let Alamat = perum+", "+rt+"/"+rw+", "+kelurahan
+  //   Axios.post(`${API_URL}/transactions/addnew/${this.props.user.id}`, {
+  //     totalprice: this.renderTotalPrice(),
+  //     shipprice: this.renderSubTotalPrice(),
+  //     status: "belum",
+  //     shippingaddress: Alamat,
+  //     buydate: "",
+  //     paydate: "",
+  //     transactionbill:"",
+  //     transactiontext:"",
+  //     transactioninvoice:""
+  //   })
+  //     .then((res) => {
+  //       this.state.cartData.forEach((val) => {
+  //         const { quantity, product } = val;
+  //         const { productprice, id } = product;
+
+  //         Axios.post(`${API_URL}/transactionDetails`, {
+  //           transactionId: res.data.id,
+  //           productId: id,
+  //           productprice,
+  //           quantity,
+  //           totalPrice: productprice * quantity,
+  //         })
+  //           .then((res) => {
+  //             console.log(res.data);
+  //           })
+  //           .catch((err) => {
+  //             console.log("ERROR POST TRANSACTION DETAILS");
+  //           });
+  //       });
+  //     })
+  //     .then((res) => {
+  //       this.state.cartData.forEach((val) => {
+  //         this.deleteCartHandler(val.id);
+  //       });
+  //     })
+  //     .then((res) => {
+  //       this.props.fillCart(this.props.user.id);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
+
   checkoutHandler = () => {
-    let date = new Date();
-    Axios.post(`${API_URL}/transactions`, {
-      userId: this.props.user.id,
-      totalPrice: this.renderTotalPrice(),
-      status: "pending",
-      checkoutDate: date.getTime(),
-      completedDate: "",
+    const { perum, rt, rw, kelurahan} = this.state.alamat
+    let Alamat = perum+", "+rt+"/"+rw+", "+kelurahan
+    Axios.post(`${API_URL}/transactions/new/${this.props.user.id}`, {
+      totalprice: this.renderTotalPrice(),
+      shipprice: this.renderSubTotalPrice(),
+      status: "belum",
+      shippingaddress: Alamat,
+      buydate: "",
+      paydate: "",
+      transactionbill:"",
+      transactiontext:"",
+      transactioninvoice:""
     })
       .then((res) => {
-        this.state.cartData.forEach((val) => {
-          const { quantity, product } = val;
-          const { price, id } = product;
+        console.log(res)
+        console.log("berhasil post transaksi")
 
-          Axios.post(`${API_URL}/transactionDetails`, {
-            transactionId: res.data.id,
-            productId: id,
-            price,
-            quantity,
-            totalPrice: price * quantity,
-          })
-            .then((res) => {
-              console.log(res.data);
-            })
-            .catch((err) => {
-              console.log("ERROR POST TRANSACTION DETAILS");
-            });
-        });
-      })
-      .then((res) => {
-        this.state.cartData.forEach((val) => {
-          this.deleteCartHandler(val.id);
-        });
-      })
-      .then((res) => {
-        this.props.fillCart(this.props.user.id);
+        Axios.delete(`${API_URL}/carts/all/${this.props.user.id}`)
+        .then((res) =>{
+          console.log(res)
+          console.log("behasil delete cart")
+          this.getCartData()
+        })
+        .catch((err) => {
+          console.log(err)
+          console.log("gagal delete cart")
+        })  
       })
       .catch((err) => {
         console.log(err);
+        console.log("gagal post transaksi")
       });
   };
 
@@ -180,6 +239,7 @@ class Cart extends React.Component {
     let totalPrice = 0;
 
     this.state.cartData.forEach((val) => {
+    // this.state.checkoutItems.forEach((val) => {
       const { quantity, product } = val;
       const { productprice } = product;
 
@@ -305,14 +365,20 @@ class Cart extends React.Component {
           </div>
           <div className=" textPreviewCart">
             <h5 className="mb-3">Alamat Kirim</h5>
-            <TextField className="mb-1" placeholder="Alamat"></TextField>
+            <TextField className="mb-1" placeholder="Alamat"
+            onChange={(e) => this.inputHandler(e, "perum", "alamat")}
+            ></TextField>
             <div className="mb-1 container">
               <div className="row">
-                <TextField className="col mr-1" placeholder="RT"></TextField>
-                <TextField className="col ml-1" placeholder="RW"></TextField>
+                <TextField className="col mr-1" placeholder="RT"
+                onChange={(e) => this.inputHandler(e, "rt", "alamat")}
+                ></TextField>
+                <TextField className="col ml-1" placeholder="RW"
+                onChange={(e) => this.inputHandler(e, "rw", "alamat")}></TextField>
               </div>
             </div>
-            <TextField className="mb-2" placeholder="Kelurahan"></TextField>
+            <TextField className="mb-2" placeholder="Kelurahan"
+                onChange={(e) => this.inputHandler(e, "kelurahan", "alamat")}></TextField>
             <div className="container mb-1">
               <div className="row">
                 <strong className="col mt-2">Kecamatan</strong>
@@ -351,7 +417,9 @@ class Cart extends React.Component {
               <h5 className="col">TOTAL</h5>  
               <h5 className="col-auto">{priceFormatter(this.renderTotalPrice())}</h5>
             </div>
-            <ButtonUI className="mt-3 login-modal-btn" type="outlined">
+            <ButtonUI className="mt-3 login-modal-btn" type="outlined"
+            onClick={(e) => {this.checkoutHandler()}}
+            >
               Bayar
             </ButtonUI>
           </div>

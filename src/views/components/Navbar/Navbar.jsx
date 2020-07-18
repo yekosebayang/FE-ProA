@@ -366,7 +366,13 @@ class Navbar extends React.Component {
             <ButtonUI 
               type="textual"
               className="my-3 mx-2"
-            >Pembayaran</ButtonUI>
+            >
+              <Link to="/user-payment"
+              style={{ textDecoration: "none", color: "inherit" }}
+              >
+                Pembayaran
+              </Link>
+              </ButtonUI>
           </>
         )
       }

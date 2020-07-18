@@ -21,6 +21,7 @@ import RegisterScreen from "./views/screens/Auth/RegisterScreen";
 import LoginScreen from "./views/screens/Auth/LoginScreen";
 import ForgetPassword from "./views/screens/Auth/ForgetPassword";
 import ResetPassword from "./views/screens/Auth/ResetPassword";
+import UserPayment from "./views/screens/User/UserPayment";
 
 const cookieObj = new Cookie();
 
@@ -53,6 +54,7 @@ class App extends React.Component {
         <>
           <Route exact path="/user" component={User}/>
           <Route exact path="/user-cart" component={Cart} />
+          <Route exact path="/user-payment" component={UserPayment} />
           <Route exact path="/history" component={History} />
         </>
       );
@@ -97,7 +99,8 @@ class App extends React.Component {
       <>
         {
         window.location.pathname === "/" || window.location.pathname === "/product/:productId" ||
-        window.location.pathname === "/user-cart" || window.location.pathname === "/history" ||
+        window.location.pathname === "/user-cart" || window.location.pathname ==="/user-payment" ||
+         window.location.pathname === "/history" ||
         window.location.pathname === "/admin-dashboard" || window.location.pathname === "/admin-payment" ||
          window.location.pathname === "/admin-payment" ||
         window.location.pathname ==="/user"
