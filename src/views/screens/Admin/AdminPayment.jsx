@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import "./user.css";
+import "./AdminDashboard.css";
 
 import { Table, Alert } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -19,14 +19,15 @@ import swal from "sweetalert";
 class UserPayment extends React.Component {
   state = {
     paymentData: [],
-    selectedFile: null,
+    selectedFile: "",
     selectedTrans: 0,
-    hiddenFileInput: null,
+    selectedTransImage: "",
+    message: "",
     modalOpen: false,
   };
 
   getPaymentData = () => {
-    Axios.get(`${API_URL}/transactions/user/${this.props.user.id}`)
+    Axios.get(`${API_URL}/transactions/all`)
       .then((res) => {
         console.log(res.data[0]);
         this.setState({ paymentData: res.data });
@@ -49,6 +50,7 @@ class UserPayment extends React.Component {
           <thead>
             <tr>
               <th>No</th>
+              <th>userId</th>
               <th>Status</th>
               <th>Total</th>
               <th>Pesan</th>
@@ -61,38 +63,26 @@ class UserPayment extends React.Component {
     )
   }
 
-  fileChangeHandler = (e) => {
-    this.setState({ selectedFile: e.target.files[0] });
-    console.log(this.state.selectedFile)
-  };
-
-  handleClick = () => {
-    document.getElementById("selectImage").click()
-  }
-
-  payBtnHandler = () => {
-    let paymentPict = new FormData();
-    paymentPict.append("file", this.state.selectedFile,)
-
-    Axios.put(`${API_URL}/transactions/payment/${this.state.selectedTrans}`, 
-    paymentPict)
+  rjcBtnHandler = () => {
+    console.log("masuk")
+    Axios.put(`${API_URL}/transactions/reject/${this.state.selectedTrans}/${this.state.message}`)
     .then((res) => {
       this.getPaymentData()
-      swal("Berhasil!", "Bukti bayar berhasil di unggah", "success")
-      this.setState({selectedFile: null})
-      this.toggleModal()
+      this.setState({selectedFile: ""})
+      this.setState({message: "-"})
+      swal("Berhasil!", "status pembayaran berhasil diubah", "success")
+      this.toggleEdit()
     })
     .catch((err) => {
       console.log(err)
-      swal("Gagal!", "Bukti bayar belum di pilih", "warning")
-
-      // alert(err.response.data.message)
+      alert(err.response.data.message)
     })
   }
 
-  toggleModal = (produkId = 0) => {
+  toggleModal = (produkId = 0, gambar = "") => {
     this.setState({ modalOpen: !this.state.modalOpen})
     this.setState({ selectedTrans: produkId})
+    this.setState({ selectedTransImage: gambar })
   };
 
   renderPaymentModal = () => {
@@ -103,29 +93,38 @@ class UserPayment extends React.Component {
       >
         <ModalHeader className="modal-login-header" toggle={(e) => this.toggleModal()}></ModalHeader>
         <ModalBody>
-          <h4>Unggah Bukti bayar</h4>
+          <h4>Cek Bukti bayar</h4>
             <p>Id Transaksi: {this.state.selectedTrans}</p>
-          <div class="custom-file">
-              <input onChange={this.fileChangeHandler} type="file" class="custom-file-input customfileinputPROA" id="imageAdd" style={{display: "none"}}/>
-              <label class="custom-file-label customfilelabelPROA" for="imageAdd">Pilih file</label>
+            <img src={this.state.selectedTransImage} alt="" style={{ height: "250px"}} />
+            <TextField
+                onChange={(e) => this.setState({message: e.target.value})} 
+                placeholder="berikan pesan berbeda"
+                className="login-modal-text mt-3"
+                />
+                <button onClick={console.log(this.state.message)}>ss</button>
+          <div className="row">
+            <ButtonUI className="col mt-3 mx-1 login-modal-btn" type="outlined" onClick={(e) => this.accBtnHandler("sudah")}
+            >Terima</ButtonUI>
+            <ButtonUI className="col mt-3 mx-1 login-modal-btn" type="contained" onClick={(e) => this.rjcBtnHandler()}
+            >Tolak</ButtonUI>
           </div>
-          <ButtonUI className="mt-3 login-modal-btn" type="outlined" onClick={(e) => this.payBtnHandler()}
-          >Kirim</ButtonUI>
         </ModalBody>
       </Modal>
         )
   }
 
   renderPaymentData = () => {
-    console.log(this.state.paymentData)
     return this.state.paymentData.map((val, idx) => {
       const { transactionId, totalprice, status, buydate, paydate, 
         shippingaddress, transactionbill, transactiontext, transactioninvoice, user} = val;
-        
+      // const { id } = user  
       return (
         <tr>
           <td>
             <strong>{idx + 1}</strong>
+          </td>
+          <td>
+            {/* <strong>{id}</strong> */}
           </td>
           <td>
             <div className="container">
@@ -142,15 +141,15 @@ class UserPayment extends React.Component {
             <strong>{transactiontext}</strong>
           </td>
           <td>
-            {status != "belum" ? (
+            {status == "sudah" ? (
               null
             ) : (
               <ButtonUI
               disabled
               type="outlined"
-              onClick={(e) => this.toggleModal(transactionId)}
+              onClick={(e) => this.toggleModal(transactionId, transactionbill)}
               >
-                Bayar
+                Cek
               </ButtonUI>
             )}
             {/* <ButtonUI

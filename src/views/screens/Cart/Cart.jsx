@@ -152,7 +152,7 @@ class Cart extends React.Component {
   // checkoutHandler = () => {
   //   const { perum, rt, rw, kelurahan} = this.state.alamat
   //   let Alamat = perum+", "+rt+"/"+rw+", "+kelurahan
-  //   Axios.post(`${API_URL}/transactions/addnew/${this.props.user.id}`, {
+  //   Axios.post(`${API_URL}/transactions/new/${this.props.user.id}`, {
   //     totalprice: this.renderTotalPrice(),
   //     shipprice: this.renderSubTotalPrice(),
   //     status: "belum",
@@ -164,35 +164,23 @@ class Cart extends React.Component {
   //     transactioninvoice:""
   //   })
   //     .then((res) => {
-  //       this.state.cartData.forEach((val) => {
-  //         const { quantity, product } = val;
-  //         const { productprice, id } = product;
+  //       console.log(res)
+  //       console.log("berhasil post transaksi")
 
-  //         Axios.post(`${API_URL}/transactionDetails`, {
-  //           transactionId: res.data.id,
-  //           productId: id,
-  //           productprice,
-  //           quantity,
-  //           totalPrice: productprice * quantity,
-  //         })
-  //           .then((res) => {
-  //             console.log(res.data);
-  //           })
-  //           .catch((err) => {
-  //             console.log("ERROR POST TRANSACTION DETAILS");
-  //           });
-  //       });
-  //     })
-  //     .then((res) => {
-  //       this.state.cartData.forEach((val) => {
-  //         this.deleteCartHandler(val.id);
-  //       });
-  //     })
-  //     .then((res) => {
-  //       this.props.fillCart(this.props.user.id);
+  //       Axios.delete(`${API_URL}/carts/all/${this.props.user.id}`)
+  //       .then((res) =>{
+  //         console.log(res)
+  //         console.log("behasil delete cart")
+  //         this.getCartData()
+  //       })
+  //       .catch((err) => {
+  //         console.log(err)
+  //         console.log("gagal delete cart")
+  //       })  
   //     })
   //     .catch((err) => {
   //       console.log(err);
+  //       console.log("gagal post transaksi")
   //     });
   // };
 
@@ -204,32 +192,36 @@ class Cart extends React.Component {
       shipprice: this.renderSubTotalPrice(),
       status: "belum",
       shippingaddress: Alamat,
-      buydate: "",
-      paydate: "",
-      transactionbill:"",
-      transactiontext:"",
-      transactioninvoice:""
     })
       .then((res) => {
-        console.log(res)
-        console.log("berhasil post transaksi")
+        this.state.cartData.forEach((val) => {
+          const { quantity, product } = val;
+          const { productprice, id } = product;
 
+          Axios.post(`${API_URL}/details/${res.data.transactionId}/${id}`, {
+            productprice,
+            quantity,
+            totalPrice: productprice * quantity
+          })
+          .then((res) => {
+            console.log("SUKSES GAN")
+          })
+          .catch((err) => {
+            console.log(err.response.data.message)
+          });
+        });
+      })
+      .then((res) => {
         Axios.delete(`${API_URL}/carts/all/${this.props.user.id}`)
         .then((res) =>{
-          console.log(res)
-          console.log("behasil delete cart")
           this.getCartData()
         })
         .catch((err) => {
           console.log(err)
-          console.log("gagal delete cart")
-        })  
-      })
-      .catch((err) => {
-        console.log(err);
-        console.log("gagal post transaksi")
+        })
       });
-  };
+  };  
+
 
   componentDidMount() {
     this.getCartData();

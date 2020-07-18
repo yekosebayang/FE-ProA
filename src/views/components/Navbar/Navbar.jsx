@@ -341,14 +341,25 @@ class Navbar extends React.Component {
       if (this.props.user.userrole == "admin"){
         return(
           <>
-          <ButtonUI 
+           <Link to="/admin-dashboard"
+              style={{ textDecoration: "none", color: "inherit" }}
               type="textual"
               className="my-3 mx-2"
-            >Dashboard</ButtonUI>
+            >
+              <ButtonUI type="textual">
+                Dashboard
+              </ButtonUI>
+            </Link>
             <ButtonUI 
               type="textual"
               className="my-3 mx-2"
-            >Transaksi</ButtonUI>
+            >
+              <Link to="/admin-payment"
+              style={{ textDecoration: "none", color: "inherit" }}
+              >
+                Pembayaran
+              </Link>
+              </ButtonUI>
           </>
         )
       } else {
