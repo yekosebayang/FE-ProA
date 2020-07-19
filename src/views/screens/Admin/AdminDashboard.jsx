@@ -18,6 +18,7 @@ class AdminDashboard extends React.Component {
     createForm: {
       productname: "",
       productprice: 0,
+      productstock: 0,
       productdesc: "",
       categoryId: 1,
     },
@@ -25,6 +26,7 @@ class AdminDashboard extends React.Component {
       id: 0,
       productname: "",
       productprice: 0,
+      productstock: 0,
       productdesc: "",
     },
     activeProducts: [
@@ -524,28 +526,31 @@ class AdminDashboard extends React.Component {
             />
           </div>
           <div className="col-12 mt-3">
-            <textarea
-             onChange={(e) => this.inputHandler(e, "productdesc", "createForm")}
-             style={{ resize: "none" }}
-             placeholder="Keterangan"
-             className="custom-text-input"
-           ></textarea>
+          <TextField
+              placeholder="desc"
+              onChange={(e) => this.inputHandler(e, "productdesc", "createForm")}
+            />
           </div>
-          <div className="col-6 mt-3">
+          <div className="col-3 mt-3">
            <div className="input-group" style={{borderRadius: "25px"}}>
               <div class="custom-file">
                 <input onChange={this.fileChangeHandler} type="file" class="custom-file-input customfileinputPROA" id="imageAdd" style={{display: "none"}}/>
                 <label class="custom-file-label customfilelabelPROA" for="imageAdd">Choose file</label>
               </div>
             </div>
-          {/* <input type="file" onChange={this.fileChangeHandler} /> */}
+          </div>
+          <div className="col-3 mt-3">
+            <TextField
+              placeholder="stock"
+              onChange={(e) => this.inputHandler(e, "productstock", "createForm")}
+            />
           </div>
           <div className="col-6 mt-3">
-          <select
-          value={this.state.createForm.category}
-          className="custom-text-input h-100 pl-3"
-          onChange={(e) => this.inputHandler(e, "categoryId", "createForm")}
-          >{this.renderCategoryList()}</select>
+            <select
+            value={this.state.createForm.category}
+            className="custom-text-input h-100 pl-3"
+            onChange={(e) => this.inputHandler(e, "categoryId", "createForm")}
+            >{this.renderCategoryList()}</select>
            </div>
            <div className="col-3 mt-3">
             <ButtonUI onClick={this.addProductHandler} type="contained">
@@ -573,29 +578,46 @@ class AdminDashboard extends React.Component {
             </div>
          </div>
         <div>
-            <p>Nama Produk: </p>
-            <TextField
-              value={this.state.editForm.productname}
-              placeholder="Nama Produk"
-              onChange={(e) => this.inputHandler(e, "productname", "editForm")}
-            />
-            <p className="mt-1">Harga Produk: </p>
-            <TextField
-              value={this.state.editForm.productprice}
-              placeholder="Harga Produk"
-              onChange={(e) => this.inputHandler(e, "productprice", "editForm")}
-            />
+          <div className="row">
+            <div className="col">
+              <p>Nama Produk: </p>
+              <TextField
+                value={this.state.editForm.productname}
+                placeholder="Nama Produk"
+                onChange={(e) => this.inputHandler(e, "productname", "editForm")}
+              />
+            </div>
+            <div className="col">
+              <p className="mt-1">Harga Produk: </p>
+              <TextField
+                value={this.state.editForm.productprice}
+                placeholder="Harga Produk"
+                onChange={(e) => this.inputHandler(e, "productprice", "editForm")}
+              />
+            </div>
+          </div>
             <p className="mt-1">Keterangan Produk: </p>
             <TextField
               value={this.state.editForm.productdesc}
               placeholder="Keterangan Produk"
               onChange={(e) => this.inputHandler(e, "productdesc", "editForm")}
             />
-            <p className="mt-1">Foto Produk: </p>
-            <div className="input-group" style={{borderRadius: "25px"}}>
-              <div class="custom-file">
-                <input onChange={this.fileChangeHandler} type="file" class="custom-file-input customfileinputPROA" id="imageAdd" style={{display: "none"}}/>
-                <label class="custom-file-label customfilelabelPROA" for="imageAdd">Choose file</label>
+            <div className="row">
+              <div className="col">
+                <p className="mt-1">Foto Produk: </p>
+                <div className="input-group" style={{borderRadius: "25px"}}>
+                  <div class="custom-file">
+                    <input onChange={this.fileChangeHandler} type="file" class="custom-file-input customfileinputPROA" id="imageAdd" style={{display: "none"}}/>
+                    <label class="custom-file-label customfilelabelPROA" for="imageAdd">Pilih Foto</label>
+                  </div>
+                </div>
+              </div>
+              <div className="col">
+                <p className="mt-1">Stok Produk: </p>
+                <TextField className="col"
+                value={this.state.editForm.productstock}
+                placeholder="Stock Produk"
+                onChange={(e) => this.inputHandler(e, "productstock", "editForm")}></TextField>
               </div>
             </div>
             <div className="container row">
@@ -680,17 +702,4 @@ class AdminDashboard extends React.Component {
     )}
   }
 
-const mapStateToProps = (state) => {
-  return {
-    prdc: state.prdc
-  };
-};
-
-const mapDispatchToProps = {
-  addProduct: addProduct,
-  addCtP: addCategoryToProduct,
-  delCfP: deleteCategoryFromProduct,
-  editProduct, deleteProduct
-};
-
-export default connect(mapStateToProps,mapDispatchToProps)(AdminDashboard);
+export default AdminDashboard;

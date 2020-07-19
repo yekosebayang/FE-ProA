@@ -14,13 +14,11 @@ import {
   ModalBody,
 } from "reactstrap";
 
-import { faUser, faSignOut, fa } from "@fortawesome/free-regular-svg-icons";
-
 import "./Navbar.css";
 import TextField from "../TextField/TextField";
 import ButtonUI from "../Button/Button";
 import { logoutHandler, navbarInputHandler,loginHandler, resetErrmsg, verifEmail, signBtnHandler } from "../../../redux/actions";
-import { faSignOutAlt, faEdit } from "@fortawesome/free-solid-svg-icons";
+import { faSignOutAlt, faEdit, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const CircleBg = ({ children }) => {
@@ -237,20 +235,15 @@ class Navbar extends React.Component {
        return(
         <div className="container">         
           <div className="row">
-          <div className="col-4"></div>
           <Dropdown className="col"
             toggle={this.toggleDropdown}
             isOpen={this.state.dropdownOpen}
           >
             {this.props.user.id ? (this.toggleDropdown) : null}
-            <DropdownToggle className="" tag="div" >
-              <ButtonUI 
-                // onClick={this.logoutBtnHandler}
-                type="contained"
-              >X
-              </ButtonUI>
+            <DropdownToggle tag="div" >
+            <FontAwesomeIcon className="icon-auth" icon={faUser} style={{ fontSize: 32 }} />
             </DropdownToggle>
-            <DropdownMenu right className="mt-3">
+            <DropdownMenu right className="">
               <DropdownItem header>
               <div className="d-flex">
                 <h4 classname="mr-1" style={{textAlign:"center"}}>{this.props.user.username}</h4>
@@ -260,26 +253,25 @@ class Navbar extends React.Component {
                   <p>{this.props.user.userrealname ? (
                     this.props.user.userrealname
                   ):(
-                    "kosong"
+                    this.props.user.username
                   )}</p>
               </DropdownItem>
               <DropdownItem>
-              <div className="d-flex">
-                  <h5 className="mr-3">ubah data</h5>
-                  <Link className="" to="/user"><FontAwesomeIcon icon={faEdit} style={{ fontSize: 20 }} /> </Link>
-                </div>
+              <Link className="d-flex" to="/user"
+              style={{ color: "inherit", textDecoration: "inherit"}}
+              >
+                <strong className="mr-3">ubah data</strong>
+                <FontAwesomeIcon icon={faEdit} style={{ fontSize: 20 }} /> 
+              </Link>
               </DropdownItem>
               <DropdownItem divider/>
               <DropdownItem >
-                <div className="d-flex">
-                  <h5 className="mr-5">keluar</h5>
-                  <ButtonUI
+                <ButtonUI className="d-flex"
                   type="textual" 
                   onClick={this.logoutBtnHandler}
-                  >
-                    <FontAwesomeIcon icon={faSignOutAlt} style={{ fontSize: 24 }} /> 
-                  </ButtonUI>
-                </div>
+                > <h5 className="mr-3">keluar</h5>
+                  <FontAwesomeIcon icon={faSignOutAlt} style={{ fontSize: 24 }} /> 
+                </ButtonUI>
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
@@ -288,27 +280,61 @@ class Navbar extends React.Component {
        )
     } else {
       return (
-        <div className="container">
-          <div className="row">
-            <div className=" mr-3"></div>
-            {/* bungkus di tombol login */}
-            <Link className="col-3 mr-3"
-              style={{ textDecoration: "none", color: "inherit" }}>
-              <ButtonUI type="outlined" 
-                // onClick={(e) => this.SignInOnBtnHandler("")}
-                onClick={(e) => this.toggleModal("login")}
-              >Masuk
-              </ButtonUI> 
+        <div className="container">         
+        <div className="row">
+        <Dropdown className="col"
+          toggle={this.toggleDropdown}
+          isOpen={this.state.dropdownOpen}
+        >
+          <DropdownToggle tag="div" >
+          <FontAwesomeIcon className="icon-auth" icon={faUser} style={{ fontSize: 32 }} />
+          </DropdownToggle>
+          <DropdownMenu right className="">
+            <DropdownItem header>
+            <div className="d-flex">
+              <h4 classname="mr-1" style={{textAlign:"center"}}>Welcome</h4>
+            </div>
+            </DropdownItem>
+            <DropdownItem divider/>
+            <DropdownItem>
+            <Link className="d-flex" onClick={(e) => this.toggleModal("login")}
+            style={{ color: "inherit", textDecoration: "inherit"}}
+            >
+              <strong className="mr-3">Masuk</strong>
+              {/* <FontAwesomeIcon icon={faEdit} style={{ fontSize: 20 }} />  */}
             </Link>
-            <Link className="col-3 ml-1"
-              style={{ textDecoration: "none", color: "inherit" }}
-              to="/auth-register">
-            <ButtonUI type="contained" // regis
-            >Daftar</ButtonUI>
+            </DropdownItem>
+            <DropdownItem >
+            <Link className="d-flex" to="/user"
+            style={{ color: "inherit", textDecoration: "inherit"}}
+            to="/auth-register"
+            >
+              <strong className="mr-3">Daftar</strong>
+              {/* <FontAwesomeIcon icon={faEdit} style={{ fontSize: 20 }} />  */}
             </Link>
-          {/* bungkus di tombol login */}
-          </div>
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
         </div>
+      </div>
+        // <div className="container">
+        //   {/* <div className="row"> */}
+        //     {/* <div className="d-flex"> */}
+        //       <ButtonUI className="col-1 p-0"
+        //         type="outlined" 
+        //         onClick={(e) => this.toggleModal("login")}
+        //       >Masuk
+        //       </ButtonUI> 
+        //       <Link className="col-1"
+        //         style={{ textDecoration: "none", color: "inherit" }}
+        //         to="/auth-register">
+        //       <ButtonUI type="contained" // regis
+        //       >Daftar
+        //       </ButtonUI>
+        //       </Link>
+        //     {/* </div> */}
+        //   {/* </div> */}
+        // </div>
       )
     }
   }
@@ -395,14 +421,12 @@ class Navbar extends React.Component {
     return (
     <div className="container">
       <div className="row" style={{border: "none"}}>
-        <div className="col-2 pt-1 logo-text">
-          <Link style={{ textDecoration: "none", color: "inherit" }} to="/">
-            <h2>
-            LOGO
-            </h2>
-          </Link>
-        </div>
-        <div className="col pl-2 pt-1">
+        <Link className=" col-2 pt-1 d-flex flex-column"
+        style={{ textDecoration: "none", color: "inherit" }} to="/">
+            <p className="logo-text">FOOD</p>
+            {/* <p className="logo-text2 p-2">fast-delivery</p> */}
+        </Link>
+        <div className="col pl-2 pt-4">
           <div className="container">
             <div className="row">
               {this.props.user.id ? (
@@ -432,7 +456,7 @@ class Navbar extends React.Component {
             </div>
           </div>
         </div>
-        <div className="col-3 pt-1 row align-items-center">
+        <div className="col-1 pt-1 row align-items-center">
           {this.renderMenuNav()}
         </div>
         {/* bottom of the page*/}

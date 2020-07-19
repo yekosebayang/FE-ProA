@@ -1,3 +1,17 @@
+
+@font-face {
+  font-family: "BanaChips-Free";
+  src: url("./constants/fonts/Banana/BanaChips.eot"); /* IE9 Compat Modes */
+  src: url("./constants/fonts/Banana/BanaChips.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+    url("./constants/fonts/Banana/BanaChips.otf") format("opentype"), /* Open Type Font */
+    url("./constants/fonts/Banana/BanaChips.svg") format("svg"), /* Legacy iOS */
+    url("./constants/fonts/Banana/BanaChips.ttf") format("truetype"), /* Safari, Android, iOS */
+    url("./constants/fonts/Banana/BanaChips.woff") format("woff"), /* Modern Browsers */
+    url("./constants/fonts/Banana/BanaChips.woff2") format("woff2"); /* Modern Browsers */
+  font-weight: normal;
+  font-style: normal;
+}
+
 :root {
   --accent-default: #ff9600;
   --accent-dark: #995900;
@@ -11,6 +25,7 @@
 
 body {
   font-family: Muli !important;
+  margin-bottom: unset !important;
 }
 
 h1 {

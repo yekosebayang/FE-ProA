@@ -5,12 +5,10 @@ class PageNotFound extends React.Component {
   render() {
     return (
       <div className="container text-center">
-        <h1>Oops.. 404 Page Not Found</h1>
-        <Link
-          style={{ textDecoration: "none", color: "inherit" }}
-          to="/"
-        > Kembali 
+        <Link className="" style={{ textDecoration: "none", color: "inherit" }} to="/">
+        <h1 className="logo-text">FOOD</h1>
         </Link>
+        <h1>. . .</h1>
       </div>
     );
   }

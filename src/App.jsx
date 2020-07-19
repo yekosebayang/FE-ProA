@@ -43,7 +43,6 @@ class App extends React.Component {
           <Route exact path="/admin-dashboard" component={AdminDashboard} />
           <Route exact path="/admin-payment" component={Payments} />
           <Route exact path="/admin-report" component={Report} />
-          <Route exact path="/admin-dashboard" component={AdminDashboard} />
         </>
       );
     }
@@ -93,6 +92,7 @@ class App extends React.Component {
           </>  
     )
   }
+  
   render() {
     if (this.props.user.cookieChecked) {
       return (

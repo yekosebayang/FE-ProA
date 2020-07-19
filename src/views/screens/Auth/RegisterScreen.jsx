@@ -125,7 +125,7 @@ class RegisterScreen extends React.Component {
       <div className="container">
       <div className="col-2 mx-auto logo-text mt-4"> 
         <Link className="" style={{ textDecoration: "none", color: "inherit" }} to="/">
-          <h1>LOGO</h1>
+          <h1 className="logo-text">FOOD</h1>
         </Link>
       </div>
         <div className="mt-5">

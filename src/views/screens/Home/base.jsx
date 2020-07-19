@@ -186,7 +186,6 @@ class BaseC extends React.Component {
             {this.renderProducts()}
           </div>
           </div>
-        <div className="col-1"></div>
       </div>
     </div>
     )

@@ -203,8 +203,8 @@ class UserPayment extends React.Component {
             <div className="col py-2">
               <div className="dashboardCart">
                 <div className="customhdbg">
-                <caption ClassName="py-2 pl-2" style={{color: "black"}}>
-                  <h2>Pembayaran</h2>
+                <caption style={{color: "black"}}>
+                  <h2 className="py-2 pl-2">Pembayaran</h2>
                 </caption>
                 </div>
                 {this.renderHeadProductList()}
