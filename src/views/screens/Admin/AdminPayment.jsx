@@ -22,7 +22,7 @@ class UserPayment extends React.Component {
     selectedFile: "",
     selectedTrans: 0,
     selectedTransImage: "",
-    message: "",
+    message: "-",
     modalOpen: false,
   };
 
@@ -64,7 +64,6 @@ class UserPayment extends React.Component {
   }
 
   rjcBtnHandler = () => {
-    console.log("masuk")
     Axios.put(`${API_URL}/transactions/reject/${this.state.selectedTrans}/${this.state.message}`)
     .then((res) => {
       this.getPaymentData()
@@ -76,6 +75,33 @@ class UserPayment extends React.Component {
     .catch((err) => {
       console.log(err)
       alert(err.response.data.message)
+    })
+  }
+
+  accBtnHandler = () => {
+    Axios.put(`${API_URL}/transactions/acc/${this.state.selectedTrans}/${this.state.message}`)
+    .then((res) => {
+      
+      Axios.get(`${API_URL}/details/acc/${this.state.selectedTrans}`)
+      .then((res) =>{ 
+        console.log(res.data)
+        res.data.array.forEach(val => {
+          const {quantity, product} = val
+          const {id} = product
+          Axios.put(`${API_URL}/products/sold/${id}/${quantity}`)
+          .then((res) => {console.log("sukss GAN")})
+          .then((err) => {console.log(err)})
+        });
+      })
+      .catch((err) => {
+        console.log(err)
+        console.log("error get product")
+      })
+
+    })
+    .catch((err) => {
+      console.log(err)
+      console.log("error acc transaksi")
     })
   }
 
@@ -103,7 +129,7 @@ class UserPayment extends React.Component {
                 />
                 <button onClick={console.log(this.state.message)}>ss</button>
           <div className="row">
-            <ButtonUI className="col mt-3 mx-1 login-modal-btn" type="outlined" onClick={(e) => this.accBtnHandler("sudah")}
+            <ButtonUI className="col mt-3 mx-1 login-modal-btn" type="outlined" onClick={(e) => this.accBtnHandler()}
             >Terima</ButtonUI>
             <ButtonUI className="col mt-3 mx-1 login-modal-btn" type="contained" onClick={(e) => this.rjcBtnHandler()}
             >Tolak</ButtonUI>

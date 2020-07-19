@@ -149,41 +149,6 @@ class Cart extends React.Component {
     // }
   };
 
-  // checkoutHandler = () => {
-  //   const { perum, rt, rw, kelurahan} = this.state.alamat
-  //   let Alamat = perum+", "+rt+"/"+rw+", "+kelurahan
-  //   Axios.post(`${API_URL}/transactions/new/${this.props.user.id}`, {
-  //     totalprice: this.renderTotalPrice(),
-  //     shipprice: this.renderSubTotalPrice(),
-  //     status: "belum",
-  //     shippingaddress: Alamat,
-  //     buydate: "",
-  //     paydate: "",
-  //     transactionbill:"",
-  //     transactiontext:"",
-  //     transactioninvoice:""
-  //   })
-  //     .then((res) => {
-  //       console.log(res)
-  //       console.log("berhasil post transaksi")
-
-  //       Axios.delete(`${API_URL}/carts/all/${this.props.user.id}`)
-  //       .then((res) =>{
-  //         console.log(res)
-  //         console.log("behasil delete cart")
-  //         this.getCartData()
-  //       })
-  //       .catch((err) => {
-  //         console.log(err)
-  //         console.log("gagal delete cart")
-  //       })  
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //       console.log("gagal post transaksi")
-  //     });
-  // };
-
   checkoutHandler = () => {
     const { perum, rt, rw, kelurahan} = this.state.alamat
     let Alamat = perum+", "+rt+"/"+rw+", "+kelurahan
@@ -220,8 +185,7 @@ class Cart extends React.Component {
           console.log(err)
         })
       });
-  };  
-
+  };
 
   componentDidMount() {
     this.getCartData();
