@@ -15,6 +15,7 @@ class AdminDashboard extends React.Component {
   state = {
     productList: [],
     categoryList: [],
+    paketList: [],
     createForm: {
       productname: "",
       productprice: 0,
@@ -29,12 +30,24 @@ class AdminDashboard extends React.Component {
       productstock: 0,
       productdesc: "",
     },
+    editCategoryForm:{
+      id: 0,
+      categoryname: ""
+    },
+    editPaketForm:{
+      id: 0,
+      paketname: ""
+    },
     activeProducts: [
     ],
     toggleOpen: {
-      produk: false,
       category: false,
+      paket: false,
       editProduct: false,
+      editCategory: false,
+      editPaket: false,
+      head: "a",
+      newCategory: false,
     },
     nameFilter: "",
     categoryFilter: "",
@@ -44,12 +57,14 @@ class AdminDashboard extends React.Component {
     },
     selectedFile: null,
     categoryId: 1,
+    paketId: 1,
     max: 999999999,
   };
 
   componentDidMount() {
     this.getProduct();
     this.getCategory();
+    this.getPaket();
     // this.inputPriceFilter();
   }
 
@@ -73,6 +88,16 @@ class AdminDashboard extends React.Component {
       });
   }
 
+  getPaket = () => {
+    Axios.get(`${API_URL}/Paket`)
+    .then((res) => {
+      this.setState({ paketList: res.data });
+    })
+    .catch((err) => {
+      console.log(err.response.data.message);
+    });
+}
+
   inputHandler = (e, field, form) => {
     let { value } = e.target;
     this.setState({
@@ -89,15 +114,15 @@ class AdminDashboard extends React.Component {
     console.log(this.state.selectedFile)
   };
   
-  editModalBtnHandler = (idx) => {
+  editModalBtnHandler = (form, idx, list, toggle) => {
     this.setState({
-      editForm: {
-        ...this.state.productList[idx],
-      },
+      [form]: {
+        ...this.state[list][idx],
+      }, //dapet id sama category
     });
     this.setState({
       toggleOpen: {
-        ...this.state.toggleOpen, editProduct: !this.state.toggleOpen.editProduct
+        ...this.state.toggleOpen, [toggle]: !this.state.toggleOpen[toggle]
       }
     })
   };
@@ -169,6 +194,103 @@ class AdminDashboard extends React.Component {
     });
     this.getProduct();
   }
+
+  addPakettoProductHandler = () => {
+    let productId = this.state.editForm.id
+    let paketId = this.state.paketId
+    Axios.post(`${API_URL}/products/${productId}/paket/${paketId}`)
+    .then((res) => {
+      this.getProduct()
+      swal("Berhasil!", res.data.productname +" masuk ke paket" ,"success")
+      this.toggleEdit("paket")
+    })
+    .catch((err) => {
+      swal("Gagal!", err.response.data.message ,"error")
+    });
+  }
+
+  deletePaketfromProductHandler = () => {
+    let productId = this.state.editForm.id
+    let paketId = this.state.paketId
+    Axios.delete(`${API_URL}/products/${productId}/paket/${paketId}`)
+    .then((res) => {
+      this.getProduct()
+      swal("Berhasil!", "Kategori berhasil dihapus dari " + res.data.productname ,"success")
+      this.toggleEdit("paket")
+    })
+    .catch((err) => {
+      swal("Gagal!", err.response.data.message ,"error")
+      console.log(err.response.data.message);
+    });
+  }
+
+  renderModalProductPaket = () => {
+    return(
+      <Modal
+        toggle={(e) => this.toggleEdit("paket")} // pemanggil tutup buka
+        isOpen={this.state.toggleOpen.paket} // si trigger buka
+        className="modal-Paket"
+      >
+        <ModalHeader className="modal-login-header" toggle={(e) => this.toggleEdit("paket")}></ModalHeader>
+        <ModalBody>
+         <div className="row mb-4">
+            <div className="col-auto mr-auto ml-3">
+             <h4>Paket</h4>
+             <p>{this.state.editForm.id}</p>
+            </div>
+         </div>
+         <div>
+            <select
+              className="custom-text-input h-100 pl-3"
+              // onChange={(e) => this.inputHandler(e, "paketId", "editForm")}
+              onChange={(e) => this.setState({paketId: e.target.value})}
+              >{this.renderPaketList()}
+            </select>
+            <div className="container row">
+              <ButtonUI className="mt-3 login-modal-btn" type="outlined" onClick={(e) => this.addPakettoProductHandler()}
+              >Tambah</ButtonUI>
+              <ButtonUI className="mt-3 login-modal-btn" type="outlined" onClick={(e) => this.deletePaketfromProductHandler()}
+              >Hapus</ButtonUI>
+            </div>
+          </div>
+        </ModalBody>
+      </Modal>
+    )
+  }
+
+  renderModalProductCategory = () => {
+    return(
+      <Modal
+        toggle={(e) => this.toggleEdit("category")} // pemanggil tutup buka
+        isOpen={this.state.toggleOpen.category} // si trigger buka
+        className="modal-category"
+      >
+        <ModalHeader className="modal-login-header" toggle={(e) => this.toggleEdit("category")}></ModalHeader>
+        <ModalBody>
+         <div className="row mb-4">
+            <div className="col-auto mr-auto ml-3">
+             <h4>Kategori</h4>
+             <p>{this.state.editForm.id}</p>
+            </div>
+         </div>
+         <div>
+            <select
+              className="custom-text-input h-100 pl-3"
+              // onChange={(e) => this.inputHandler(e, "categoryId", "editForm")}
+              onChange={(e) => this.setState({categoryId: e.target.value})}
+              >{this.renderCategoryList()}
+            </select>
+            <div className="container row">
+              <ButtonUI className="mt-3 login-modal-btn" type="outlined" onClick={(e) => this.addCategorytoProductHandler()}
+              >Tambah</ButtonUI>
+              <ButtonUI className="mt-3 login-modal-btn" type="outlined" onClick={(e) => this.deleteCategoryfromProductHandler()}
+              >Hapus</ButtonUI>
+            </div>
+          </div>
+        </ModalBody>
+      </Modal>
+    )
+  }
   
   addCategorytoProductHandler = () => {
     let productId = this.state.editForm.id
@@ -211,6 +333,94 @@ class AdminDashboard extends React.Component {
     });
   }
 
+  addCategoryBtnHandler = () => {
+    Axios.post(`${API_URL}/category/new`, {
+      categoryname: this.state.editCategoryForm.categoryname
+    })
+    .then((res) => {
+      this.getCategory()
+      swal("Berhasil!", this.state.newCategoryName + "berhasil ditambahkan","success")
+      this.toggleEdit("newCategory")
+      this.setState({newCategoryName: ""})
+    })
+    .catch((err) => {
+      swal("Gagal!", err.response.data.message ,"error")
+      console.log(err.response.data.message);
+      this.setState({newCategoryName: ""})
+    });
+  }
+
+  addPaketBtnHandler = () => {
+    Axios.post(`${API_URL}/Paket/new`, {
+      paketname: this.state.editPaketForm.paketname
+    })
+    .then((res) => {
+      this.getPaket()
+      swal("Berhasil!", this.state.editPaketForm.paketname + "berhasil ditambahkan","success")
+    })
+    .catch((err) => {
+      swal("Gagal!", err.response.data.message ,"error")
+      console.log(err.response.data.message);
+    });
+  }
+
+  editCategoryBtnHandler = (cateId) => {
+    const bodyData = {
+      categoryname: this.state.editCategoryForm.categoryname
+    }
+    Axios.put(`${API_URL}/category/edit/${cateId}`,bodyData)
+    .then((res) => {
+      this.getCategory()
+      swal("Berhasil!", bodyData.categoryname + "berhasil diubah","success")
+      this.toggleEdit("editCategory")
+    })
+    .catch((err) => {
+      // swal("Gagal!", err.response.data.message ,"error")
+      console.log(err);
+    });
+  }
+
+  editPaketBtnHandler = (paketId) => {
+    const bodyData = {
+      paketname: this.state.editPaketForm.paketname
+    }
+    Axios.put(`${API_URL}/Paket/edit/${paketId}`,bodyData)
+    .then((res) => {
+      this.getPaket()
+      swal("Berhasil!", this.state.editPaketForm.paketname + "berhasil diubah","success")
+      this.toggleEdit("editPaket")
+    })
+    .catch((err) => {
+      // swal("Gagal!", err.response.data.message ,"error")
+      console.log(err);
+    });
+  }
+
+  deleteCategoryBtnHandler = (cateId) => {
+    Axios.delete(`${API_URL}/category/${cateId}`)
+    .then((res) => {
+      this.getCategory()
+      swal("Berhasil!", "category berhasil dihapus","success")
+    })
+    .catch((err) => {
+      swal("Gagal!", err.response.data.message ,"error")
+      console.log(err.response.data.message);
+    });
+  }
+
+  deletePaketBtnHandler = (paketId) => {
+    console.log(paketId)
+    Axios.delete(`${API_URL}/Paket/${paketId}`)
+    .then((res) => {
+      this.getCategory()
+      swal("Berhasil!", "paket berhasil dihapus","success")
+    })
+    .catch((err) => {
+      swal("Gagal!", err.response.data.message ,"error")
+      console.log(err.response.data.message);
+    });
+  }
+
   toggleEdit = (toggle, id = 1) => {
     this.setState({
       toggleOpen: {
@@ -219,8 +429,24 @@ class AdminDashboard extends React.Component {
       }
     })
     this.setState({editForm: {...this.state.editForm, id: id}})
-    console.log(this.state.toggleOpen.category)
+    // console.log(this.state.toggleOpen.category)
   };
+
+  toggleEditHead = (head) => {
+    this.setState({toggleOpen: {...this.state.toggleOpen, head: head,}})
+ 
+  }
+
+  renderNavCardCategory= () => {
+    return this.state.categoryList.map((val) => {
+      const { id, categoryname } = val;
+      return (
+        <option 
+        onClick={() => this.setState({categoryFilter: categoryname})}
+        value={id}>{categoryname}</option>
+      )
+    })
+  }
 
   renderNavCard = () => {
     return(
@@ -233,24 +459,16 @@ class AdminDashboard extends React.Component {
                 >
                 <h5 className="card-title">Menu</h5>
                 </ButtonUI>
-                
               </div>
-              {/* <Link to="/" style={{ color: "inherit", textDecoration: "inherit"}} > */}
-              <ul className="list-group listNav-group-flush">
-                <li onClick={() => this.setState({categoryFilter: "minuman"})}className="list-group-item ">
-                <ButtonUI type="textual">Minuman</ButtonUI>
-                </li>
-                <li onClick={() => this.setState({categoryFilter: "makanan"})} className="list-group-item ">
-                <ButtonUI type="textual">Makanan</ButtonUI>
-                </li>
-                <li onClick={() => this.setState({categoryFilter: "tambahan"})} className="list-group-item ">
-                <ButtonUI type="textual">Tambahan</ButtonUI>
-                </li>
-                <li onClick={() => this.setState({categoryFilter: "kudapan"})} className="list-group-item ">
-                <ButtonUI type="textual">Kudapan</ButtonUI>
-                </li>
-              </ul>
-              {/* </Link> */}
+              <select className="custom-text-input pl-3" style={{borderRadius: "0px"}} value={this.state.createForm.category}>
+                {this.renderNavCardCategory()}
+              </select>
+              <div className="textPreview"
+              style={{borderRadius: "0px 0px 10px 10px"}}
+              >
+                Paket
+              </div>
+        
         </div>
         <div>
               <div className="card-header cardNav-header mt-2">
@@ -298,7 +516,7 @@ class AdminDashboard extends React.Component {
   }
 
   renderHeadProductList = () => {
-    if (!this.state.toggleOpen.produk) {
+    if (this.state.toggleOpen.head =="a") {
       return (
         <>
           <table className="dashboard-table">
@@ -308,6 +526,7 @@ class AdminDashboard extends React.Component {
                 <th>Nama Produk</th>
                 <th>Harga</th>
                 <th>Terjual</th>
+                <th>Stok</th>
               </tr>
             </thead>
             <tbody>
@@ -317,6 +536,7 @@ class AdminDashboard extends React.Component {
               <tr>
                 <th></th>
                 <th>muat lebih banyak</th>
+                <th></th>
                 <th></th>
                 <th></th>
                 <th></th>
@@ -330,7 +550,7 @@ class AdminDashboard extends React.Component {
 
   renderProductListCategory = () => {
     return this.state.productList.map((val, idx) => {
-      const { id, productname, productprice, sold, category } = val;
+      const { id, productname, productprice, productsold, productstock, category } = val;
       return category.map((val2) => {
         
         if (val2.categoryname.toLowerCase().includes(this.state.categoryFilter.toLowerCase()) 
@@ -364,15 +584,17 @@ class AdminDashboard extends React.Component {
                   currency: "IDR",
                 }).format(productprice)}{" "}
               </td>
-              <td></td>
-              {/* <td></td> */}
+              <td>
+                {productsold}
+              </td>
+              <td>{productstock}</td>
             </tr>
             <tr
               className={`collapse-item ${
                 this.state.activeProducts.includes(idx) ? "active" : null
               }`}
             >
-              <td className="" colSpan={3}>
+              <td className="" colSpan={5}>
                 {this.viewDataDetail(val,idx)}
               </td>
             </tr>
@@ -385,7 +607,7 @@ class AdminDashboard extends React.Component {
 
   renderProductListNormal = () => {
     return this.state.productList.map((val, idx) => {
-      const { id, productname, productprice, sold, category } = val;
+      const { id, productname, productprice, productsold, productstock } = val;
       if (productprice <= this.state.pricefilter.max && productprice >= this.state.pricefilter.min
         && productname.toLowerCase().includes(this.state.nameFilter.toLowerCase())
       )
@@ -416,15 +638,15 @@ class AdminDashboard extends React.Component {
                   currency: "IDR",
                 }).format(productprice)}{" "}
               </td>
-              <td></td>
-              {/* <td></td> */}
+              <td>{productsold}</td>
+              <td>{productstock}</td>
             </tr>
             <tr
               className={`collapse-item ${
                 this.state.activeProducts.includes(idx) ? "active" : null
               }`}
               >
-              <td className="" colSpan={3}>
+              <td className="" colSpan={5}>
                 {this.viewDataDetail(val,idx)}
               </td>
             </tr>
@@ -451,7 +673,7 @@ class AdminDashboard extends React.Component {
   }
 
   viewDataDetail = (val, idx) => {
-    const { id, productimage, productdesc, category } = val;
+    const { id, productimage, productdesc, category, paket } = val;
     return(
       <>
         <div className="d-flex justify-content-around align-items-center">
@@ -463,15 +685,19 @@ class AdminDashboard extends React.Component {
                 <span style={{ fontWeight: "normal" }}>{productdesc}</span>
               </h6>
               <h6>
-                Category: 
+                Kategori: 
                 {this.viewDataDetailCategory(category)}
+              </h6>
+              <h6>
+                Paket: 
+                {this.viewDataDetailCategory(paket)}
               </h6>
             </div>
           </div>
           <div className="d-flex flex-column align-items-center">
             <div className="row">
               <ButtonUI
-                onClick={(e) => this.editModalBtnHandler(idx)}
+                onClick={(e) => this.editModalBtnHandler("editForm", idx, "productList", "editProduct")}
                 type= "outlined">
               Ubah
               </ButtonUI>
@@ -479,6 +705,11 @@ class AdminDashboard extends React.Component {
                 className="" type="outlined"
                 onClick={(e) => this.toggleEdit("category", id)}>
                 Kategori
+              </ButtonUI>
+              <ButtonUI 
+                className="" type="outlined"
+                onClick={(e) => this.toggleEdit("paket", id)}>
+                Paket
               </ButtonUI>
             </div>
             <ButtonUI onClick={(e) => this.deleteProductBtnHandler(val.productname, id)}>
@@ -508,9 +739,140 @@ class AdminDashboard extends React.Component {
       )
     })
   }
+
+  renderPaketList = () => {
+    return this.state.paketList.map((val, idx) => {
+      const { id, paketname } = val;
+      return (
+        <option value={id}>{paketname}</option>
+      )
+    })
+  }
   
+  renderCrudCategory = () => {
+    if (this.state.toggleOpen.head == "b") {
+      return(
+        <>
+          <table className="dashboard-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Kategori</th>
+                <th>Ubah</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.renderCategoryCrudtList()}
+            </tbody>
+            <tfoot>
+              <tr>
+                <th></th>
+                <th>muat lebih banyak</th>
+                <th></th>
+                <th>
+                </th>
+              </tr>
+            </tfoot>
+          </table>
+        </>
+      )
+    }
+  }
+
+  renderCrudPaket = () => {
+    if (this.state.toggleOpen.head == "c") {
+      return(
+        <>
+          <table className="dashboard-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Paket</th>
+                <th>Ubah</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.renderPaketCrudtList()}
+            </tbody>
+            <tfoot>
+              <tr>
+                <th></th>
+                <th>muat lebih banyak</th>
+                <th></th>
+                <th>
+                </th>
+              </tr>
+            </tfoot>
+          </table>
+        </>
+      )
+    }
+  }
+
+  renderPaketCrudtList = () => {
+    return this.state.paketList.map((val, idx) => {
+      const { id, paketname} = val;
+          return (
+            <>
+            <tr>
+              <td> {id} </td>
+              <td> {paketname} </td>
+              <td>
+                <ButtonUI 
+                onClick={(e) => this.editModalBtnHandler("editPaketForm", idx, "paketList", "editPaket")}
+                type="textual">
+                  Ubah
+                </ButtonUI>
+              </td>
+              <td>
+                <ButtonUI 
+                onClick={(e) => this.deletePaketBtnHandler(id)}
+                type="textual">
+                  Hapus
+                </ButtonUI>
+              </td>
+              <td></td>
+              <td></td>
+            </tr>
+          </>
+          )
+    })
+  }
+
+  renderCategoryCrudtList = () => {
+    return this.state.categoryList.map((val, idx) => {
+      const { id, categoryname} = val;
+          return (
+            <>
+            <tr>
+              <td> {id} </td>
+              <td> {categoryname} </td>
+              <td>
+                <ButtonUI 
+                onClick={(e) => this.editModalBtnHandler("editCategoryForm", idx, "categoryList", "editCategory")}
+                type="textual">
+                  Ubah
+                </ButtonUI>
+              </td>
+              <td>
+                <ButtonUI 
+                onClick={(e) => this.deleteCategoryBtnHandler(id)}
+                type="textual">
+                  Hapus
+                </ButtonUI>
+              </td>
+              <td></td>
+              <td></td>
+            </tr>
+          </>
+          )
+    })
+  }
+
   renderAddProduct = () => {
-    if (this.state.toggleOpen.produk) {
+    if (this.state.toggleOpen.head == "d") {
       return(
         <div className="row my-2">
           <div className="col-8">
@@ -560,6 +922,82 @@ class AdminDashboard extends React.Component {
       </div>
      )
     }
+  }
+
+  renderModalEditCategory = () => {
+    return(
+      <Modal
+        toggle={(e) => this.toggleEdit("editCategory")} // pemanggil tutup buka
+        isOpen={this.state.toggleOpen.editCategory} // si trigger buka
+        className="modal-editProduk"
+      >
+        <ModalHeader className="modal-login-header" toggle={(e) => this.toggleEdit("editCategory")}></ModalHeader>
+        <ModalBody>
+         <div className="row mb-4">
+            <div className="col-auto mr-auto ml-3">
+              <h4>Kategori</h4>
+               {this.state.editCategoryForm.id}
+            </div>
+         </div>
+        <div>
+          <div className="row">
+            <div className="col">
+              <p>Nama Kategori: </p>
+                <TextField
+                  value={this.state.editCategoryForm.categoryname}
+                  placeholder="Nama Kategori"
+                  onChange={(e) => this.inputHandler(e, "categoryname", "editCategoryForm")}
+                />
+            </div>
+          </div>            
+            <div className="container row">
+                <ButtonUI className="mt-3 login-modal-btn" type="outlined" onClick={(e) => this.editCategoryBtnHandler(this.state.editCategoryForm.id)}
+                >Simpan</ButtonUI>
+              <ButtonUI className="mt-3 login-modal-btn" type="outlined" onClick={(e) => this.toggleEdit("editCategory")}
+              >Batal</ButtonUI>
+            </div>
+          </div>
+        </ModalBody>
+      </Modal>
+    )
+  }
+
+  renderModalEditPaket = () => {
+    return(
+      <Modal
+        toggle={(e) => this.toggleEdit("editPaket")} // pemanggil tutup buka
+        isOpen={this.state.toggleOpen.editPaket} // si trigger buka
+        className="modal-editPaket"
+      >
+        <ModalHeader className="modal-login-header" toggle={(e) => this.toggleEdit("editPaket")}></ModalHeader>
+        <ModalBody>
+         <div className="row mb-4">
+            <div className="col-auto mr-auto ml-3">
+              <h4>paket</h4>
+               {this.state.editPaketForm.id}
+            </div>
+         </div>
+        <div>
+          <div className="row">
+            <div className="col">
+              <p>Nama Kategori: </p>
+                <TextField
+                  value={this.state.editPaketForm.paketname}
+                  placeholder="Nama Kategori"
+                  onChange={(e) => this.inputHandler(e, "paketname", "editPaketForm")}
+                />
+            </div>
+          </div>            
+            <div className="container row">
+                <ButtonUI className="mt-3 login-modal-btn" type="outlined" onClick={(e) => this.editPaketBtnHandler(this.state.editPaketForm.id)}
+                >Simpan</ButtonUI>
+              <ButtonUI className="mt-3 login-modal-btn" type="outlined" onClick={(e) => this.toggleEdit("editCategory")}
+              >Batal</ButtonUI>
+            </div>
+          </div>
+        </ModalBody>
+      </Modal>
+    )
   }
 
   renderModalEditProduct = () => {
@@ -632,41 +1070,6 @@ class AdminDashboard extends React.Component {
     )
   }
 
-  renderModalAddCategory = () => {
-    return(
-      <Modal
-        toggle={(e) => this.toggleEdit("category")} // pemanggil tutup buka
-        isOpen={this.state.toggleOpen.category} // si trigger buka
-        className="modal-category"
-      >
-        <ModalHeader className="modal-login-header" toggle={(e) => this.toggleEdit("category")}></ModalHeader>
-        <ModalBody>
-         <div className="row mb-4">
-            <div className="col-auto mr-auto ml-3">
-             <h4>Kategori</h4>
-             <p>{this.state.editForm.id}</p>
-            </div>
-         </div>
-         <div>
-            <select
-              value={this.state.createForm.category}
-              className="custom-text-input h-100 pl-3"
-              // onChange={(e) => this.inputHandler(e, "categoryId", "editForm")}
-              onChange={(e) => this.setState({categoryId: e.target.value})}
-              >{this.renderCategoryList()}
-            </select>
-            <div className="container row">
-              <ButtonUI className="mt-3 login-modal-btn" type="outlined" onClick={(e) => this.addCategorytoProductHandler()}
-              >Tambah</ButtonUI>
-              <ButtonUI className="mt-3 login-modal-btn" type="outlined" onClick={(e) => this.deleteCategoryfromProductHandler()}
-              >Hapus</ButtonUI>
-            </div>
-          </div>
-        </ModalBody>
-      </Modal>
-    )
-  }
-
   render() {
     return (
       <div className="container py-1">
@@ -678,26 +1081,71 @@ class AdminDashboard extends React.Component {
             <div className="dashboard">
               <div className="d-flex justify-content-between container customhdbg">
                 <caption 
-                className={`custom-head ${!this.state.toggleOpen.produk ? "active" : null}
+                className={`custom-head ${this.state.toggleOpen.head=="a" ? "active" : null}
                 py-2 pl-2`}
-                onClick={(e) => this.toggleEdit("produk")}>
+                onClick={(e) => this.toggleEditHead("a")}>
                   <h2>Produk</h2>
                 </caption>
                 <caption 
-                className={`custom-head ${this.state.toggleOpen.produk ? "active" : null}
+                className={`custom-head ${this.state.toggleOpen.head=="b" ? "active" : null}
                 py-2 pl-2`}
-                onClick={(e) => this.toggleEdit("produk")}>
+                onClick={(e) => this.toggleEditHead("b")}>
+                  <h2>Kategori</h2>
+                </caption>
+                <caption 
+                className={`custom-head ${this.state.toggleOpen.head == "c" ? "active" : null}
+                py-2 pl-2`}
+                onClick={(e) => this.toggleEditHead("c")}>
+                  <h2>Paket</h2>
+                </caption>
+                <caption 
+                className={`custom-head ${this.state.toggleOpen.head == "d" ? "active" : null}
+                py-2 pl-2`}
+                onClick={(e) => this.toggleEditHead("d")}>
                   <h2>Tambah Produk</h2>
                 </caption>
               </div>
               {this.renderHeadProductList()}
               {this.renderAddProduct()}
+              {this.renderCrudCategory()}
+              {this.renderCrudPaket()}
             </div>
+            {this.state.toggleOpen.head == "b" ? (
+            <div className="container">
+              <div className="row">
+                <TextField className="col-8"
+                  placeholder="Nama Kategori"
+                  onChange={(e) => this.inputHandler(e, "categoryname", "editCategoryForm")}
+                  />
+                <ButtonUI className="col"
+                onClick={(e) => this.addCategoryBtnHandler()}
+                >Tambah
+                </ButtonUI>
+              </div>
+            </div>
+            ) : null}
+            {this.state.toggleOpen.head == "c" ? (
+            <div className="container">
+              <div className="row">
+                <TextField className="col-8"
+                  placeholder="Nama Paket"
+                  onChange={(e) => this.inputHandler(e, "paketname", "editPaketForm")}
+                  />
+                <ButtonUI className="col"
+                onClick={(e) => this.addPaketBtnHandler()}
+                >Tambah
+                </ButtonUI>
+              </div>
+            </div>
+            ) : null}
            {/* bottom of the page */}
           </div>
         </div>     
         {this.renderModalEditProduct()}
-        {this.renderModalAddCategory()}
+        {this.renderModalEditCategory()}
+        {this.renderModalEditPaket()}
+        {this.renderModalProductPaket()}
+        {this.renderModalProductCategory()}
       </div>
     )}
   }

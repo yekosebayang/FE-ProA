@@ -87,7 +87,7 @@ class BaseC extends React.Component {
     .then((res) => {
       // console.log(res.data[0].cartId)
       Axios.put(`${API_URL}/carts/${res.data[0].cartId}/qty/${+1}`)
-      .then((res) =>{console.log(res)})
+      .then((res) =>{swal("Berhasil!", "Produk "+ res.data.product.productname+ " berhasil ditambah kekeranjang", "success")})
       .catch((err) =>{console.log(err)
         console.log("error add old")
       })
@@ -95,7 +95,8 @@ class BaseC extends React.Component {
     .catch((err) => {
       Axios.post(`${API_URL}/carts/addnew/${this.props.user.id}/${produkId}`, {quantity: 1})
       .then((res) => {
-        console.log(res)
+        console.log(res.data)
+        swal("Berhasil!", "Produk "+ res.data.product.productname+ " berhasil ditambah kekeranjang", "success")
        })
       .catch((err) => {
         console.log("error add new")

@@ -11,7 +11,7 @@ import { faHeart, faStar, faPlusSquare } from "@fortawesome/free-regular-svg-ico
 class ProductCard extends React.Component {
 
   render() {
-    const {productdesc, productname, productprice, productimage } = this.props.data;
+    const {productdesc, productname, productprice, productimage, productsold } = this.props.data;
 
     return (
       <div className={`product-card d-inline-block ${this.props.className}`}>
@@ -20,9 +20,9 @@ class ProductCard extends React.Component {
           alt={productname}
           style={{ width: "auto", height: "auto", objectFit: "contain" }}
         />
-        <div>
-          <p className="mt-3">{productname}</p>
-          <h5 style={{ fontWeight: "bolder" }}>
+        <div className>
+          <strong className="mt-3">{productname}</strong>
+          <h5 style={{ fontWeight: "bolder", color:"#ff9600" }}>
             {new Intl.NumberFormat("id-ID", {
               style: "currency",
               currency: "IDR",
@@ -33,13 +33,11 @@ class ProductCard extends React.Component {
         <div className="d-flex flex-row align-items-center justify-content-between mt-2">
           <div>
             <div className="d-flex flex-row align-items-center justify-content-between">
-              {/* Render stars dynamically */}
-              <FontAwesomeIcon style={{ fontSize: "10px" }} icon={faStar} />
-              <FontAwesomeIcon style={{ fontSize: "10px" }} icon={faStar} />
-              <FontAwesomeIcon style={{ fontSize: "10px" }} icon={faStar} />
-              <FontAwesomeIcon style={{ fontSize: "10px" }} icon={faStar} />
-              <FontAwesomeIcon style={{ fontSize: "10px" }} icon={faStar} />
-              <small className="ml-2">4.5</small>
+            <div className="terjual"
+            type="outlined"
+            style={{ fontSize: "12px", padding: "4px 8px" }}
+          > Terjual {productsold}
+          </div>
             </div>
           </div>
           <ButtonUI

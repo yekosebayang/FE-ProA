@@ -11,3 +11,19 @@
   box-shadow: 1px 4px 8px #995900,
     0px 2px 4px #3a140c;
 }
+
+.terjual {
+  padding: 12px 18px;
+  vertical-align: middle;
+  text-align: center;
+  font-family: Muli;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 18px;
+  letter-spacing: 0.3px;
+  width: fit-content;
+  border: 1px solid var(--accent-default);
+  color: var(--accent-default);
+  border-radius: 10px;
+}
