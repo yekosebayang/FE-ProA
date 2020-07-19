@@ -92,7 +92,8 @@ class UserC extends React.Component {
       id, username, useremail})
     .then((res) => {
       console.log(res)
-      alert("sukses")
+      // alert("sukses")
+      swal("Berhasil!", "Link verif sudah dikirim", "success")
     })
     .catch((err) => {
       console.log(err)

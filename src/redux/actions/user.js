@@ -3,6 +3,7 @@ import { API_URL } from "../../constants/API";
 import Cookie from "universal-cookie";
 import userTypes from "../types/user";
 import swal from "sweetalert";
+import  { Redirect } from 'react-router-dom'
 
 const { ON_LOGIN_FAIL, ON_LOGIN_SUCCESS, ON_LOGOUT_SUCCESS } = userTypes;
 
@@ -21,6 +22,7 @@ export const loginHandler = (userData) => {
       .then((res) => {
         console.log(res.data.username) 
         // if (res.data.username == username) { // 8081
+          swal("Berhasil", "Login Berhasil", "success")
           dispatch({
             type: ON_LOGIN_SUCCESS,
             payload: res.data, 
@@ -115,6 +117,7 @@ export const userKeepLogin = (userData) => { //8081
 
 export const logoutHandler = () => {
   cookieObj.remove("authData", { path: "/" });
+  swal("Berhasil Keluar", "Terimakasih", "success")
   return {
     type: ON_LOGOUT_SUCCESS,
   };

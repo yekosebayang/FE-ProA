@@ -90,7 +90,7 @@ class Navbar extends React.Component {
       id, username, useremail})
     .then((res) => {
       console.log(res)
-      alert("sukses")
+      swal("Terikirim!", "Link Verifikasi sudah dikirim", "success")
     })
     .catch((err) => {
       console.log(err)

@@ -109,6 +109,9 @@ getPaket = () => {
 
 
   addToCartHandler = (produkId) => {
+    if (!this.props.user.id) {
+      swal("Masuk!", "Anda belum masuk", "warning")
+    }
     Axios.get(`${API_URL}/carts/get/${this.props.user.id}/${produkId}`)
     .then((res) => {
       // console.log(res.data[0].cartId)
@@ -152,27 +155,100 @@ getPaket = () => {
     });
   };
 
-  rendercard = () => {
-    if (this.state.categoryFilter == "paket")
-    return this.state.paketList.map((val) => {
-      if (
-        val.productname.toLowerCase().includes(this.props.search.searchValue.toLowerCase())
-        // && val.category.toLowerCase().includes(this.state.categoryFilter.toLowerCase())
-      )
-      {
-        return (
-          <>
-            <ProductCard
-              key={`itemForSale-${val.id}`}
-              data={val}
-              className="m-3"
-              onClick={(e) => this.addToCartHandler(val.id)}
-            />
-          </>
-        );
-      }    
-    });
-  }
+  // renderPaymentData = () => {
+  //   return this.state.paketList.map((val, idx) => {
+  //     const { transactionId, totalprice, status, buydate, paydate, 
+  //       shippingaddress, transactionbill, transactiontext, transactioninvoice, user} = val;
+  //     // const { id } = user  
+  //     return (
+  //       <tr>
+  //         <td>
+  //           <strong>{idx + 1}</strong>
+  //         </td>
+  //         <td>
+  //           {/* <strong>{id}</strong> */}
+  //         </td>
+  //         <td>
+  //           <div className="container">
+  //               <div>
+  //                 <strong>{status}</strong>
+  //               </div>
+  //           </div>
+  //         </td>
+  //         <td style={{ verticalAlign: "middle" }}>
+  //           <strong>{totalprice}</strong>
+  //         </td>
+  //         <td>
+  //           {/* <strong>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis aut rerum dolor rem totam. Accusantium, omnis! Obcaecati iure nisi alias exercitationem! Cum iusto ab a suscipit soluta magni? Vitae, animi.</strong> */}
+  //           <strong>{transactiontext}</strong>
+  //         </td>
+  //         <td>
+  //           {status == "sudah" ? (
+  //             null
+  //           ) : (
+  //             <ButtonUI
+  //             disabled
+  //             type="outlined"
+  //             onClick={(e) => this.toggleModal(transactionId, transactionbill)}
+  //             >
+  //               Cek
+  //             </ButtonUI>
+  //           )}
+  //         </td>
+  //       </tr>
+  //     );
+  //   });
+  // };
+
+  // renderHeadProductList = () => {
+  //   return(
+  //     <>
+  //       <table className="dashboardCart-table">
+  //         <thead>
+  //           <tr>
+  //             <th>No</th>
+  //             <th>userId</th>
+  //             <th>Status</th>
+  //             <th>Total</th>
+  //             <th>Pesan</th>
+  //             <th></th>
+  //           </tr>
+  //         </thead>
+  //         <tbody>{this.renderPaymentData()}</tbody>
+  //       </table>
+  //     </>
+  //   )
+  // }
+
+  // rendercard = () => {
+  //   if (this.state.categoryFilter == "paket")
+  //   return this.state.paketList.map((val) => {
+  //     if (
+  //       val.productname.toLowerCase().includes(this.props.search.searchValue.toLowerCase())
+  //       // && val.category.toLowerCase().includes(this.state.categoryFilter.toLowerCase())
+  //     )
+  //     {
+  //       return (
+  //         <>
+  //           <div className="container py-1">
+  //         <div className="row">
+  //           <div className="col py-2">
+  //             <div className="dashboardCart">
+  //               <div className="customhdbg">
+  //               <caption style={{color: "black"}}>
+  //                 <h2 className="py-2 pl-2">Paket</h2>
+  //               </caption>
+  //               </div>
+  //               {this.renderHeadProductList()}
+  //             </div>
+  //           </div>
+  //         </div>
+  //       </div>
+  //         </>
+  //       );
+  //     }    
+  //   });
+  // }
   
   renderNavCardMenu = () => {
     return this.state.categoryList.map((val, idx) => {

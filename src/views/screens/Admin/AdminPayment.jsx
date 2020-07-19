@@ -74,13 +74,13 @@ class UserPayment extends React.Component {
     })
     .catch((err) => {
       console.log(err)
-      alert(err.response.data.message)
     })
   }
 
   accBtnHandler = () => {
     Axios.put(`${API_URL}/transactions/acc/${this.state.selectedTrans}/${this.state.message}`)
     .then((res) => {
+      swal("Berhasil!", "Transaksi sudah diterima", "success")
       
       Axios.get(`${API_URL}/details/acc/${this.state.selectedTrans}`)
       .then((res) =>{ 
@@ -92,11 +92,11 @@ class UserPayment extends React.Component {
 
           Axios.put(`${API_URL}/products/sold/${id}/${quantity}`)
           .then((res) => {
-            alert("sukss GAN sold")
+            // alert("sukss GAN sold")
             
             Axios.put(`${API_URL}/products/stock/${id}/${quantity}`)
           .then((res) => {
-            alert("sukss GAN stock")
+            // alert("sukss GAN stock")
           })
           .catch((err) => {console.log(err)})
           })
@@ -107,8 +107,8 @@ class UserPayment extends React.Component {
       .then((res) => {
         Axios.post(`${API_URL}/invoice/complete/${this.state.selectedTrans}`)
         .then((res) => {console.log(res)
-        alert("suskses kirim invoice")})
-        .catch((err) => {alert("gagal kirim invoice")})
+          swal("Berhasil!", "Invoice terkirim, Transaksi sudah diterima", "success")
+        .catch((err) => {console.log(err)})
       })
       .catch((err) => {
         console.log(err)
@@ -121,6 +121,7 @@ class UserPayment extends React.Component {
       console.log("error acc transaksi")
     })
   }
+    )}
 
   toggleModal = (produkId = 0, gambar = "") => {
     this.setState({ modalOpen: !this.state.modalOpen})
