@@ -85,13 +85,30 @@ class UserPayment extends React.Component {
       Axios.get(`${API_URL}/details/acc/${this.state.selectedTrans}`)
       .then((res) =>{ 
         console.log(res.data)
-        res.data.array.forEach(val => {
+        console.log(this.state.selectedTrans)
+        res.data.forEach(val => {
           const {quantity, product} = val
           const {id} = product
+
           Axios.put(`${API_URL}/products/sold/${id}/${quantity}`)
-          .then((res) => {console.log("sukss GAN")})
-          .then((err) => {console.log(err)})
+          .then((res) => {
+            alert("sukss GAN sold")
+            
+            Axios.put(`${API_URL}/products/stock/${id}/${quantity}`)
+          .then((res) => {
+            alert("sukss GAN stock")
+          })
+          .catch((err) => {console.log(err)})
+          })
+          .catch((err) => {console.log(err)})
+          
         });
+      })
+      .then((res) => {
+        Axios.post(`${API_URL}/invoice/complete/${this.state.selectedTrans}`)
+        .then((res) => {console.log(res)
+        alert("suskses kirim invoice")})
+        .catch((err) => {alert("gagal kirim invoice")})
       })
       .catch((err) => {
         console.log(err)
@@ -143,7 +160,6 @@ class UserPayment extends React.Component {
     return this.state.paymentData.map((val, idx) => {
       const { transactionId, totalprice, status, buydate, paydate, 
         shippingaddress, transactionbill, transactiontext, transactioninvoice, user} = val;
-      // const { id } = user  
       return (
         <tr>
           <td>

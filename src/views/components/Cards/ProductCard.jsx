@@ -11,7 +11,7 @@ import { faHeart, faStar, faPlusSquare } from "@fortawesome/free-regular-svg-ico
 class ProductCard extends React.Component {
 
   render() {
-    const {productdesc, productname, productprice, productimage, productsold } = this.props.data;
+    const {productdesc, productname, productprice, productimage, productsold, productstock } = this.props.data;
 
     return (
       <div className={`product-card d-inline-block ${this.props.className}`}>
@@ -38,6 +38,12 @@ class ProductCard extends React.Component {
             style={{ fontSize: "12px", padding: "4px 8px" }}
           > Terjual {productsold}
           </div>
+          <div className="terjual"
+            type="outlined"
+            style={{ fontSize: "12px", padding: "4px 8px" }}
+          > Stok {productstock}
+          </div>
+          
             </div>
           </div>
           <ButtonUI

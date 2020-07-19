@@ -203,9 +203,15 @@ export const resetErrmsg = (isi = "") => {
 export const verifEmail = (userData) => {
   return (dispatch) => {
     Axios.post(`${API_URL}/users/req-verif`, {userData})
-    dispatch({
-      type: "RESET_ERRMSG",
-      payload: "link Verifikasi terkirim"
+    .then((res) => {
+      console.log(res)
+      dispatch({
+        type: "RESET_ERRMSG",
+        payload: "link Verifikasi terkirim"
+      })
+    })
+    .catch((err) => {
+      console.log(err)
     })
   }
 }

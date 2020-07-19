@@ -2,6 +2,8 @@ import React from "react";
 import { Redirect, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import Cookies from "universal-cookie";
+import Axios from "axios";
+import { API_URL } from "../../../constants/API";
 
 import {
   Dropdown,
@@ -20,6 +22,7 @@ import ButtonUI from "../Button/Button";
 import { logoutHandler, navbarInputHandler,loginHandler, resetErrmsg, verifEmail, signBtnHandler } from "../../../redux/actions";
 import { faSignOutAlt, faEdit, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import swal from "sweetalert";
 
 const CircleBg = ({ children }) => {
   return <div className="circle-bg">{children}</div>;
@@ -81,10 +84,17 @@ class Navbar extends React.Component {
 
   verifBtnHandler = () => {
     const { id, username, useremail} = this.props.user
-    let user = {
-      id, username, useremail
-    }
-    this.props.verifEmail(user)
+
+    // this.props.verifEmail(user)
+    Axios.post(`${API_URL}/users/req-verif`, {
+      id, username, useremail})
+    .then((res) => {
+      console.log(res)
+      alert("sukses")
+    })
+    .catch((err) => {
+      console.log(err)
+    })  
   }
 
   loginBtnHandler = () => {
@@ -198,13 +208,6 @@ class Navbar extends React.Component {
             <div className="row mt-2">
              <div className="col-auto mr-auto ml-3"></div>
            </div>
-           {this.props.user.errMsg ? (
-          <div className="row justify-content-center  mt-1">
-            <div className="alert alert-success">
-                <p>{this.props.user.errMsg}</p>
-            </div>
-          </div>  
-            ) : null}
           </ModalBody>
         </Modal>
       )

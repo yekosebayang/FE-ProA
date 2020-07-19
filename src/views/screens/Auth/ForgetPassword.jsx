@@ -6,7 +6,7 @@ import {Modal, ModalHeader, ModalBody} from "reactstrap";
 import TextField from "../../components/TextField/TextField";
 import ButtonUI from "../../components/Button/Button";
 import "./AuthScreen.css";
-import { forgetPassword } from "../../../redux/actions";
+import { forgetPassword, resetErrmsg } from "../../../redux/actions";
 
 
 class ForgetPassowrd extends React.Component{
@@ -14,6 +14,10 @@ class ForgetPassowrd extends React.Component{
         email: "",
         modalOPen: false
     }
+      componentDidMount() {
+        resetErrmsg()
+      }
+
       inputHandler = (e) => {
         const { value } = e.target;
         this.setState({email: value});
@@ -115,9 +119,9 @@ class ForgetPassowrd extends React.Component{
         return (
           <div className="">
           <div className="col-2 mx-auto logo-text mt-4"> 
-            <Link className="" style={{ textDecoration: "none", color: "inherit" }} to="/">
-              <h1>LOGO</h1>
-            </Link>
+          <Link className="" style={{ textDecoration: "none", color: "inherit" }} to="/">
+        <h1 className="logo-text">FOOD</h1>
+        </Link>
           </div>
             <div className="mt-5">
               <div className="col-5 card mx-auto">
@@ -140,6 +144,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   onForget : forgetPassword,
+  resetErrmsg
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ForgetPassowrd);

@@ -65,7 +65,6 @@ class AdminDashboard extends React.Component {
     this.getProduct();
     this.getCategory();
     this.getPaket();
-    // this.inputPriceFilter();
   }
 
   getCategory = () => {
@@ -92,6 +91,7 @@ class AdminDashboard extends React.Component {
     Axios.get(`${API_URL}/Paket`)
     .then((res) => {
       this.setState({ paketList: res.data });
+      console.log(this.state.paketList)
     })
     .catch((err) => {
       console.log(err.response.data.message);

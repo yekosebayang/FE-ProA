@@ -169,10 +169,11 @@ class Cart extends React.Component {
             totalPrice: productprice * quantity
           })
           .then((res) => {
-            console.log("SUKSES GAN")
+            alert("SUKSES POST TRANSAKSI DETAIL GAN")
           })
           .catch((err) => {
             console.log(err.response.data.message)
+            alert("GAGAL POST TRANSAKSI DETAIL")
           });
         });
       })

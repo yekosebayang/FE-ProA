@@ -18,11 +18,15 @@ class BaseC extends React.Component {
     activeIndex: 0,
     animating: false,
     ItemforSaleData: [],
+    categoryList: [],
+    paketList: [],
     categoryFilter: "",
   }
 
   componentDidMount() {
     this.getItemforSaleData();
+    this.getCategory();
+    this.getPaket();
   }
 
   renderCarouselItems = () => {
@@ -82,6 +86,28 @@ class BaseC extends React.Component {
       });
   };
 
+  getCategory = () => {
+    Axios.get(`${API_URL}/category`)
+    .then((res) => {
+      this.setState({ categoryList: res.data });
+    })
+    .catch((err) => {
+      console.log(err.response.data.message);
+    });
+}
+
+getPaket = () => {
+  Axios.get(`${API_URL}/Paket`)
+  .then((res) => {
+    this.setState({ paketList: res.data });
+  })
+  .catch((err) => {
+    console.log(err.response.data.message);
+  });
+}
+ 
+
+
   addToCartHandler = (produkId) => {
     Axios.get(`${API_URL}/carts/get/${this.props.user.id}/${produkId}`)
     .then((res) => {
@@ -105,6 +131,7 @@ class BaseC extends React.Component {
   }
 
   renderProducts = () => {
+    if (this.state.categoryFilter != "paket")
     return this.state.ItemforSaleData.map((val) => {
       if (
         val.productname.toLowerCase().includes(this.props.search.searchValue.toLowerCase())
@@ -124,7 +151,42 @@ class BaseC extends React.Component {
       }    
     });
   };
+
+  rendercard = () => {
+    if (this.state.categoryFilter == "paket")
+    return this.state.paketList.map((val) => {
+      if (
+        val.productname.toLowerCase().includes(this.props.search.searchValue.toLowerCase())
+        // && val.category.toLowerCase().includes(this.state.categoryFilter.toLowerCase())
+      )
+      {
+        return (
+          <>
+            <ProductCard
+              key={`itemForSale-${val.id}`}
+              data={val}
+              className="m-3"
+              onClick={(e) => this.addToCartHandler(val.id)}
+            />
+          </>
+        );
+      }    
+    });
+  }
   
+  renderNavCardMenu = () => {
+    return this.state.categoryList.map((val, idx) => {
+      const { id, categoryname } = val;
+      return(
+        <li onClick={() => this.setState({ categoryFilter: categoryname })}className="list-group-item ">
+          <ButtonUI type="textual">{categoryname}</ButtonUI>
+        </li>
+      )
+    }
+
+    )
+  }
+
   renderNavCard = () => {
     return (
       <div className="card sticky-top cardNav">
@@ -137,17 +199,9 @@ class BaseC extends React.Component {
            </div>
             {/* <Link to="/" style={{ color: "inherit", textDecoration: "inherit"}} > */}
             <ul className="list-group listNav-group-flush">
-              <li onClick={() => this.setState({ categoryFilter: "Minuman" })}className="list-group-item ">
-                <ButtonUI type="textual">Minuman</ButtonUI>
-              </li>
-              <li onClick={() => this.setState({ categoryFilter: "Makanan" })} className="list-group-item ">
-              <ButtonUI type="textual">Makanan</ButtonUI>
-              </li>
-              <li onClick={() => this.setState({ categoryFilter: "Tambahan" })} className="list-group-item ">
-              <ButtonUI type="textual">Tambahan</ButtonUI>
-              </li>
-              <li onClick={() => this.setState({ categoryFilter: "Kudapan" })} className="list-group-item ">
-              <ButtonUI type="textual">Kudapan</ButtonUI>
+              {this.renderNavCardMenu()}
+              <li onClick={() => this.setState({ categoryFilter: "paket" })}className="list-group-item ">
+                <ButtonUI type="textual">Paket</ButtonUI>
               </li>
             </ul>
             {/* </Link> */}

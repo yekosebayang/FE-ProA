@@ -13,6 +13,8 @@ import ButtonUI from "../../components/Button/Button";
 import "./user.css";
 import { connect } from "react-redux";
 import swal from "sweetalert";
+import Axios from "axios";
+import { API_URL } from "../../../constants/API";
 
 class UserC extends React.Component {
 
@@ -84,10 +86,17 @@ class UserC extends React.Component {
 
   verifBtnHandler = () => {
     const { id, username, useremail} = this.props.user
-    let user = {
-      id, username, useremail
-    }
-    this.props.verifEmail(user)
+    
+    // this.props.verifEmail(user)
+    Axios.post(`${API_URL}/users/req-verif`, {
+      id, username, useremail})
+    .then((res) => {
+      console.log(res)
+      alert("sukses")
+    })
+    .catch((err) => {
+      console.log(err)
+    })  
   }
 
   renderProfile() {
