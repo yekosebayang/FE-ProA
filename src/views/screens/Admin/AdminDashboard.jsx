@@ -59,7 +59,25 @@ class AdminDashboard extends React.Component {
     categoryId: 1,
     paketId: 1,
     max: 999999999,
+    post: false,
   };
+
+  fungsiSort = (tabel) => {
+    const { productList, post } = this.state;
+    let sortList = [...productList]
+    if (post) {
+      sortList.sort((a, b) =>
+        a[tabel] > b[tabel] ? 1 : b[tabel] > a[tabel] ? -1 : 0
+      );
+      this.setState({ productList: sortList });
+    } else {
+      sortList.sort((a, b) =>
+        a[tabel] < b[tabel] ? 1 : b[tabel] > a[tabel] ? -1 : 0
+      );
+      this.setState({ productList: sortList });
+    }
+      this.setState({ post: !post });
+}
 
   componentDidMount() {
     this.getProduct();
@@ -100,6 +118,16 @@ class AdminDashboard extends React.Component {
 
   inputHandler = (e, field, form) => {
     let { value } = e.target;
+    this.setState({
+      [form]: {
+        ...this.state[form],
+        [field]: value,
+      },
+    });
+    console.log(field,form +": "+ this.state[form][field])
+  };
+
+  inputHandler2 = (value, field, form) => {
     this.setState({
       [form]: {
         ...this.state[form],
@@ -472,12 +500,13 @@ class AdminDashboard extends React.Component {
         </div>
         <div>
               <div className="card-header cardNav-header mt-2">
-              <ButtonUI 
-                type="textual"onClick={(_) => this.setState({ priceFilter: {...this.state.pricefilter, max: this.state.max} })}
-                style={{ color: "inherit", textDecoration: "inherit"}}  
-                >
-                <h5 className="card-title">Harga</h5>
-                </ButtonUI>
+                <h5 className="card-title hovering" 
+                onClick={(e) => this.inputHandler2(9999999999, "max", "pricefilter")}
+                // this.setState({ priceFilter: 
+                // {...this.state.pricefilter, max: 9999999,}
+                //  })}
+                 >Harga</h5>
+                {this.state.pricefilter.max}
               </div>
               <div className="">
                 <TextField 
@@ -522,11 +551,11 @@ class AdminDashboard extends React.Component {
           <table className="dashboard-table">
             <thead>
               <tr>
-                <th>ID</th>
-                <th>Nama Produk</th>
-                <th>Harga</th>
-                <th>Terjual</th>
-                <th>Stok</th>
+                <th onClick={(e) => this.fungsiSort("id")}>ID</th>
+                <th onClick={(e) => this.fungsiSort("productname")}>Nama Produk</th>
+                <th onClick={(e) => this.fungsiSort("productprice")}>Harga</th>
+                <th onClick={(e) => this.fungsiSort("productsold")}>Terjual</th>
+                <th onClick={(e) => this.fungsiSort("productstock")}>Stok</th>
               </tr>
             </thead>
             <tbody>
@@ -690,7 +719,7 @@ class AdminDashboard extends React.Component {
               </h6>
               <h6>
                 Paket: 
-                {this.viewDataDetailCategory(paket)}
+                {this.viewDataDetailPaket(paket)}
               </h6>
             </div>
           </div>
@@ -726,6 +755,16 @@ class AdminDashboard extends React.Component {
       return(
         <>
           <span style={{ fontWeight: "normal" }}>{val.categoryname},</span>
+        </>
+      )
+    })
+  }
+
+  viewDataDetailPaket = (paket) => {
+    return paket.map((val) => {
+      return(
+        <>
+          <span style={{ fontWeight: "normal" }}>{val.paketname},</span>
         </>
       )
     })

@@ -184,17 +184,6 @@ class UserPayment extends React.Component {
             <strong>{transactiontext}</strong>
           </td>
           <td>
-            {/* {status == "sudah" || status == "belum" ? (
-              null
-            ) : (
-              <ButtonUI
-              // disabled
-              type="outlined"
-              onClick={(e) => this.toggleModal(transactionId, transactionbill)}
-              >
-                Cek
-              </ButtonUI>
-            )} */}
             {status == "menunggu" ? (
               <ButtonUI
               // disabled
@@ -206,18 +195,7 @@ class UserPayment extends React.Component {
             ) : (
               null
             )}
-            {/* <ButtonUI
-            type="outlined"
-            onClick={this.handleClick}
-            >
-              Bayar
-            </ButtonUI>
-            <input type="file"
-            id="selectImage"
-            //  ref={this.state.hiddenFileInput}
-             onChange={this.fileChangeHandler}
-             style={{display:'none'}} />  */}
-          </td>
+            </td>
         </tr>
       );
     });
