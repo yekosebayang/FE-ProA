@@ -184,16 +184,27 @@ class UserPayment extends React.Component {
             <strong>{transactiontext}</strong>
           </td>
           <td>
-            {status == "sudah" ? (
+            {/* {status == "sudah" || status == "belum" ? (
               null
             ) : (
               <ButtonUI
-              disabled
+              // disabled
               type="outlined"
               onClick={(e) => this.toggleModal(transactionId, transactionbill)}
               >
                 Cek
               </ButtonUI>
+            )} */}
+            {status == "menunggu" ? (
+              <ButtonUI
+              // disabled
+              type="outlined"
+              onClick={(e) => this.toggleModal(transactionId, transactionbill)}
+              >
+                Cek
+              </ButtonUI>
+            ) : (
+              null
             )}
             {/* <ButtonUI
             type="outlined"
