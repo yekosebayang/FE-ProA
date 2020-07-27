@@ -6,13 +6,12 @@ import { connect } from "react-redux";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.css";
 
+import { userKeepLogin, cookieChecker, resetErrmsg, signBtnHandler } from "./redux/actions";
 import BaseC from "./views/screens/Home/base";
 import Navbar from "./views/components/Navbar/Navbar";
-import ProductDetails from "./views/screens/ProductDetails/ProductDetails";
 import Cart from "./views/screens/Cart/Cart";
 import User from "./views/screens/User/user";
 import AdminDashboard from "./views/screens/Admin/AdminDashboard";
-import { userKeepLogin, cookieChecker, resetErrmsg, signBtnHandler } from "./redux/actions";
 import Payments from "./views/screens/Admin/AdminPayment";
 import PageNotFound from "./views/screens/PageNotFound";
 import History from "./views/screens/History/History";
@@ -83,7 +82,6 @@ class App extends React.Component {
             <Route exact path="/" component={BaseC} />
             {/* <Route exact path="/user" component={User}/> */}
             {/* <Route exact path="/" component={Home} /> */}
-            <Route exact path="/product/:productId" component={ProductDetails} />
             {this.renderAdminRoutes()}
             {this.renderProtectedRoutes()}
             <Route path="*" component={PageNotFound} />
@@ -98,7 +96,7 @@ class App extends React.Component {
       return (
       <>
         {
-        window.location.pathname === "/" || window.location.pathname === "/product/:productId" ||
+        window.location.pathname === "/" ||
         window.location.pathname === "/user-cart" || window.location.pathname ==="/user-payment" ||
          window.location.pathname === "/history" ||
         window.location.pathname === "/admin-dashboard" || window.location.pathname === "/admin-payment" ||

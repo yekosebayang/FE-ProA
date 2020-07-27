@@ -167,7 +167,7 @@ class UserPayment extends React.Component {
             <strong>{idx + 1}</strong>
           </td>
           <td>
-            {/* <strong>{id}</strong> */}
+            <strong>{user.id}</strong>
           </td>
           <td>
             <div className="container">
@@ -180,13 +180,11 @@ class UserPayment extends React.Component {
             <strong>{totalprice}</strong>
           </td>
           <td>
-            {/* <strong>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis aut rerum dolor rem totam. Accusantium, omnis! Obcaecati iure nisi alias exercitationem! Cum iusto ab a suscipit soluta magni? Vitae, animi.</strong> */}
             <strong>{transactiontext}</strong>
           </td>
           <td>
             {status == "menunggu" ? (
               <ButtonUI
-              // disabled
               type="outlined"
               onClick={(e) => this.toggleModal(transactionId, transactionbill)}
               >

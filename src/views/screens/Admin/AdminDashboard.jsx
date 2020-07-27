@@ -3,13 +3,40 @@ import "./AdminDashboard.css";
 import { Modal, ModalHeader, ModalBody } from "reactstrap";
 import Axios from "axios";
 import { API_URL } from "../../../constants/API";
-import { connect } from "react-redux";
 
-import { addProduct, addCategoryToProduct, deleteCategoryFromProduct, editProduct, deleteProduct } from "../../../redux/actions";
 import ButtonUI from "../../components/Button/Button";
 import TextField from "../../components/TextField/TextField";
 
+import DataTable from "react-data-table-component";
 import swal from "sweetalert";
+
+const columns = [
+  {
+    name: "ID",
+    selector: "id",
+    sortable: true
+  },
+  {
+    name: "Nama Produk",
+    selector: "productname",
+    sortable: true
+  },
+  {
+    name: "Harga",
+    selector: "productprice",
+    sortable: true
+  },
+  {
+    name: "Terjual",
+    selector: "productsold",
+    sortable: true
+  },
+  {
+    name: "Stok",
+    selector: "productstock",
+    sortable: true
+  },
+];
 
 class AdminDashboard extends React.Component {
   state = {
@@ -502,11 +529,7 @@ class AdminDashboard extends React.Component {
               <div className="card-header cardNav-header mt-2">
                 <h5 className="card-title hovering" 
                 onClick={(e) => this.inputHandler2(9999999999, "max", "pricefilter")}
-                // this.setState({ priceFilter: 
-                // {...this.state.pricefilter, max: 9999999,}
-                //  })}
                  >Harga</h5>
-                {this.state.pricefilter.max}
               </div>
               <div className="">
                 <TextField 
@@ -562,14 +585,14 @@ class AdminDashboard extends React.Component {
               {this.renderProductList()}
             </tbody>
             <tfoot>
-              <tr>
-                <th></th>
-                <th>muat lebih banyak</th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-              </tr>
+            <DataTable
+                  title="Data produk"
+                  // columns={columns}
+                  data={this.state.productList}
+                  paginationPerPage="5"
+                  paginationRowsPerPageOptions={[5]}
+                  pagination
+                />
             </tfoot>
           </table>
         </>
@@ -577,7 +600,7 @@ class AdminDashboard extends React.Component {
     }
   }
 
-  renderProductListCategory = () => {
+  renderProductList = () => {
     return this.state.productList.map((val, idx) => {
       const { id, productname, productprice, productsold, productstock, category } = val;
       return category.map((val2) => {
@@ -632,73 +655,6 @@ class AdminDashboard extends React.Component {
         }
       })
     })
-  }
-
-  renderProductListNormal = () => {
-    return this.state.productList.map((val, idx) => {
-      const { id, productname, productprice, productsold, productstock } = val;
-      if (productprice <= this.state.pricefilter.max && productprice >= this.state.pricefilter.min
-        && productname.toLowerCase().includes(this.state.nameFilter.toLowerCase())
-      )
-      { 
-        return (
-          <>
-            <tr
-              onClick={() => {
-                if (this.state.activeProducts.includes(idx)) {
-                  this.setState({
-                    activeProducts: [
-                      ...this.state.activeProducts.filter((item) => item !== idx),
-                    ],
-                  });
-                } else {
-                  this.setState({
-                    activeProducts: [...this.state.activeProducts, idx],
-                  });
-                }
-              }}
-              >
-              <td> {id} </td>
-              <td> {productname} </td>
-              <td>
-                {" "}
-                {new Intl.NumberFormat("id-ID", {
-                  style: "currency",
-                  currency: "IDR",
-                }).format(productprice)}{" "}
-              </td>
-              <td>{productsold}</td>
-              <td>{productstock}</td>
-            </tr>
-            <tr
-              className={`collapse-item ${
-                this.state.activeProducts.includes(idx) ? "active" : null
-              }`}
-              >
-              <td className="" colSpan={5}>
-                {this.viewDataDetail(val,idx)}
-              </td>
-            </tr>
-          </>
-          )
-        }
-    })
-  }
-
-  renderProductList = () => {
-    if (this.state.categoryFilter != ""){
-      return (
-        <>
-          {this.renderProductListCategory()}
-        </>
-      )
-    } else {
-      return (
-        <>
-          {this.renderProductListNormal()}
-        </>
-      )
-    }
   }
 
   viewDataDetail = (val, idx) => {
