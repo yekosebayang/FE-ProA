@@ -122,7 +122,7 @@ class Cart extends React.Component {
 
   renderShippingPrice = () => {
     const { shipping } = this.state
-    if (this.state.shipping >= 9){
+    if (shipping >= 9){
         return priceFormatter(40000);
     } else if (shipping <= 8 && shipping >=7){
         return priceFormatter(32000);
@@ -132,26 +132,12 @@ class Cart extends React.Component {
         return priceFormatter(16000);
     } else if (shipping <= 2 && shipping >= 1){
         return priceFormatter(8000);
-    } 
-    // switch (this.state.shipping >= 9) {
-    //   case 10,9:
-    //     return priceFormatter(40000);
-    //   case 8,7:
-    //     return priceFormatter(32000);
-    //   case 6,5:
-    //     return priceFormatter(24000);
-    //   case 4,3:
-    //     return priceFormatter(16000);
-    //   case 2,1:
-    //     return priceFormatter(8000);
-    //   default:
-    //     return 8000;
-    // }
+    }
   };
 
   checkoutHandler = () => {
     const { perum, rt, rw, kelurahan} = this.state.alamat
-    let Alamat = perum+", "+rt+"/"+rw+", "+kelurahan
+    let Alamat = perum+", "+rt+"/"+rw+", "+kelurahan+"id kecamatan: " + this.state.shipping
     Axios.post(`${API_URL}/transactions/new/${this.props.user.id}`, {
       totalprice: this.renderTotalPrice(),
       shipprice: this.renderSubTotalPrice(),
@@ -195,7 +181,6 @@ class Cart extends React.Component {
     let totalPrice = 0;
 
     this.state.cartData.forEach((val) => {
-    // this.state.checkoutItems.forEach((val) => {
       const { quantity, product } = val;
       const { productprice } = product;
 
@@ -204,19 +189,17 @@ class Cart extends React.Component {
 
     let shippingPrice = 0;
 
-    switch (this.state.shipping) {
-      case "instant":
-        shippingPrice = 100000;
-        break;
-      case "sameDay":
-        shippingPrice = 50000;
-        break;
-      case "express":
-        shippingPrice = 20000;
-        break;
-      default:
-        shippingPrice = 0;
-        break;
+    const { shipping } = this.state
+    if (shipping >= 9){
+      shippingPrice = 40000;
+    } else if (shipping <= 8 && shipping >=7){
+      shippingPrice = 32000;
+    } else if (shipping <= 6 && shipping >= 5){
+      shippingPrice = 24000;
+    } else if (shipping <= 4 && shipping >= 3){
+      shippingPrice = 16000;
+    } else if (shipping <= 2 && shipping >= 1){
+      shippingPrice = 8000;
     }
 
     return totalPrice + shippingPrice;

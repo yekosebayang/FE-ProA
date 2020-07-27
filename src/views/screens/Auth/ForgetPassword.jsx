@@ -14,16 +14,17 @@ class ForgetPassowrd extends React.Component{
         email: "",
         modalOPen: false
     }
-      componentDidMount() {
-        resetErrmsg()
-      }
+    
+    componentDidMount() {
+      this.props.resetErrmsg()
+    }
 
-      inputHandler = (e) => {
+    inputHandler = (e) => {
         const { value } = e.target;
         this.setState({email: value});
-      };
+    };
     
-      forgotBtnHandler = () => {
+    forgotBtnHandler = () => {
         let email = {
           useremail: this.state.email
         }    
@@ -32,8 +33,9 @@ class ForgetPassowrd extends React.Component{
         //   this.modalControler()
         // }
         // this.modalControler()
-      };
-    modalControler = () => {
+    };
+    
+      modalControler = () => {
       this.setState({modalOPen: !this.state.modalOPen})
     }
 
