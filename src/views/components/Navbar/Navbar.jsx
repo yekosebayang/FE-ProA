@@ -138,7 +138,7 @@ class Navbar extends React.Component {
            <div>
               <TextField
                 onChange={(e) => this.inputHandler(e, "username")} 
-                placeholder="Alamat e-mail"
+                placeholder="User-name"
                 className="mb-1 login-modal-text"
                 />
               <TextField
@@ -320,24 +320,6 @@ class Navbar extends React.Component {
         </Dropdown>
         </div>
       </div>
-        // <div className="container">
-        //   {/* <div className="row"> */}
-        //     {/* <div className="d-flex"> */}
-        //       <ButtonUI className="col-1 p-0"
-        //         type="outlined" 
-        //         onClick={(e) => this.toggleModal("login")}
-        //       >Masuk
-        //       </ButtonUI> 
-        //       <Link className="col-1"
-        //         style={{ textDecoration: "none", color: "inherit" }}
-        //         to="/auth-register">
-        //       <ButtonUI type="contained" // regis
-        //       >Daftar
-        //       </ButtonUI>
-        //       </Link>
-        //     {/* </div> */}
-        //   {/* </div> */}
-        // </div>
       )
     }
   }
@@ -355,7 +337,6 @@ class Navbar extends React.Component {
                 Verifikasi
               </Link>
               </p>
-              {/* <p>{this.props.user.verified}</p> */}
             </div>
             <div className="col-1"></div>
             {this.renderModalVerif()}
